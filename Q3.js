@@ -4,6 +4,10 @@ const fullName = (person) => {
 };
 // console.log(fullName({ firstName: "Daniel", lastName: "Sah" }));
 
+
+
+
+
 // question 3b
 const isAdult = function (person) {
   //checks if age falls within 1 to 18
@@ -17,7 +21,11 @@ const isAdult = function (person) {
     return "User did not provide a valid age";
   }
 };
-console.log(isAdult({ firstName: "Daniel", lastName: "Sah", age: "fd" }));
+// console.log(isAdult({ firstName: "Daniel", lastName: "Sah", age: 20 }));
+
+
+
+
 
 //question 3c
 //array of persons object

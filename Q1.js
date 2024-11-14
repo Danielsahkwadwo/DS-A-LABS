@@ -1,6 +1,6 @@
 //question 1a
-const capitalize = function (str) {
-  // if (!str.trim()) return "please enter a string";
+export const capitalize = function (str) {
+  if (!str.trim()) return "please enter a string";
   if (typeof str !== "string") {
     return "please enter a valid string";
   }
@@ -17,8 +17,8 @@ const capitalize = function (str) {
 
 
 // question 1b
-const reverse = function (str) {
-  // if (!str.trim()) return "please enter a string";
+export const reverse = function (str) {
+  if (!str.trim()) return "please enter a string";
   if (typeof str !== "string") {
     return "please enter a valid string";
   }
@@ -35,8 +35,8 @@ const reverse = function (str) {
 
 
 //question 1c
-const isPalindrome = function (str) {
-  // if (!str.trim()) return "please enter a string";
+export const isPalindrome = function (str) {
+  if (!str.trim()) return "please enter a string";
   if (typeof str !== "string") {
     return "please enter a valid string";
   }
@@ -56,8 +56,8 @@ const isPalindrome = function (str) {
 
 
 //question 1d
-const wordCount = function (str) {
-  // if (!str.trim()) return "please enter a string";
+export const wordCount = function (str) {
+  if (!str.trim()) return "please enter a string";
   if (typeof str !== "string") {
     return "please enter a valid string";
   }
@@ -65,10 +65,3 @@ const wordCount = function (str) {
   return count;
 };
 // console.log(wordCount(""));
-
-
-// QUESTION 4
-const compositeFunction= (...fn)=> str=>fn.reduce((accumulator,currentValue)=> currentValue(accumulator),str)
-
-const result= compositeFunction(capitalize,reverse,wordCount)
-console.log(result('leinad has'))

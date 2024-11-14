@@ -1,5 +1,5 @@
 //question 2a
-function double(arr) {
+ export function double(arr) {
   try {
     //loop through numbers and return a square of each
     const result = arr.map((number) => {
@@ -12,8 +12,10 @@ function double(arr) {
 }
 // console.log(double([1, 2, 3, 4, 5, 6, 7]));
 
+
+
 //question 2b
-const filterEven = function (arr) {
+export const filterEven = function (arr) {
   try {
     const result = arr.filter((number) => number % 2 === 0);
     return result;
@@ -23,8 +25,10 @@ const filterEven = function (arr) {
 };
 // console.log(filterEven([1, 2, 3, 4, 5, 6, 7]));
 
+
+
 //question 2c
-const sum = function (arr) {
+export const sum = function (arr) {
   try {
     const sum = arr.reduce((total, number) => total + number);
     return sum;
@@ -33,6 +37,8 @@ const sum = function (arr) {
   }
 };
 // console.log(sum([1, 2, 3, 4, 5, 6, 7, 8, 9]));
+
+
 
 //question 2d
 const average = (arr) => {
@@ -49,11 +55,3 @@ const average = (arr) => {
 };
 // console.log(average([1, 2, 3, 4, 5, 6, 7, 8, 9]));
 
-// QUESTION 4
-const compositeFunction =
-  (...fn) =>
-  (number) =>
-    fn.reduce((accumulator, currentValue) => currentValue(accumulator), number);
-
-const result = compositeFunction(double, filterEven, sum);
-console.log(result([1, 2, 3, 4, 5, 6, 7]));
