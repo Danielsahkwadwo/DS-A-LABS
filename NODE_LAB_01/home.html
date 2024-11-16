@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <script src="app.js" defer></script>
     <title>Let Code lead</title>
   </head>
   <style>
@@ -19,41 +18,41 @@
         Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
         sans-serif;
     }
-    .home--text{
+    .home--text {
       background-color: dodgerblue;
       color: white;
       padding: 1.4rem;
       margin-bottom: 5rem;
     }
 
-    h2{
+    h2 {
       text-align: center;
       font-weight: bold;
       text-transform: capitalize;
     }
-    form{
+    form {
       text-align: center;
     }
-    fieldset{
+    fieldset {
       padding: 5rem 2rem;
       width: 50%;
       margin: 0 auto;
     }
-    input{
+    input {
       width: 100%;
       padding: 10px;
     }
-    button{
+    button {
       width: 100%;
       padding: 10px;
       margin-top: 1rem;
       border: none;
       background-color: dodgerblue;
-      color:white;
+      color: white;
       font-weight: 600;
       cursor: pointer;
     }
-    legend{
+    legend {
       padding: 0 10px;
     }
   </style>
@@ -64,10 +63,11 @@
         <div class="home--text">
           <h2>Welcome to Home page</h2>
         </div>
-        <form method="get" action="/create-user">
+        <form onsubmit="submitData(event)">
           <fieldset>
             <legend>Provide User Information</legend>
             <input
+              class="username"
               type="text"
               name="username"
               id=""
@@ -80,14 +80,25 @@
     </main>
 
     <script>
-      function submitData(event) {
+      async function submitData(event) {
         event.preventDefault();
 
         const username = document.querySelector(".username");
         if (username.value === "") {
-          alert("please enter a valid username");
+          return alert("please enter a valid username");
         } else {
-          console.log(username.value);
+          await fetch("http://localhost:3000/create-user", {
+            method: "POST",
+            headers: { "Content-Type": "text/plain" },
+            body: username.value,
+            credentials: "include",
+          })
+            .then((res) => {
+              console.log("username sent to node backend");
+            })
+            .catch((err) => {
+              console.log(err);
+            });
         }
       }
     </script>

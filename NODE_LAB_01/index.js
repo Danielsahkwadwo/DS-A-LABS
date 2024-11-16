@@ -26,9 +26,15 @@ const server = http.createServer((req, res) => {
       }
     });
   } else if (pathName === "/create-user") {
-    res.writeHead(200, ("Content-Type", "text/plain"));
-    console.log(res)
-    res.end("hello");
+    let body = "";
+    req.on("data", (chunk) => {
+      body += chunk;
+    });
+    req.on("end", () => {
+      console.log("Username: ", body);
+      res.writeHead(200, ("Content-Type", "text/plain"));
+      res.end();
+    });
   }
 });
 
