@@ -32,9 +32,9 @@ const server = http.createServer((req, res) => {
     });
     req.on("end", () => {
       console.log("Username: ", body);
-      res.writeHead(200, ("Content-Type", "text/plain"));
-      res.end();
     });
+    res.writeHead(302, { Location: "/" });
+    res.end();
   }
 });
 
