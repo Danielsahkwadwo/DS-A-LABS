@@ -1,0 +1,19 @@
+extends baseTemplate 
+block main 
+    section.books-page
+      div.container
+        h2 Books Collection
+        div.search-bar
+          input#search(type="text" placeholder="Search books by title...")
+          button#search-btn Search
+        div.books-list
+          each book in books
+            div.book-card
+              h3.book-title=book.title
+              p.book-description=book.description
+              p.book-description=book.author
+              p.book-available=book.available===1? "available":"unavailable"
+              div.buttons
+                a.btn-primary(href=hjkl) About Book
+                a.btn-secondary(href=hjk) Borrow Now
+

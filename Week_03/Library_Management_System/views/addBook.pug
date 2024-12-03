@@ -1,0 +1,32 @@
+extends baseTemplate 
+block main 
+    section.dashboard--section
+        include partials/sidebar
+        div.content
+            header
+                h1 Add a New Book
+            section.form-section
+                form(action="/add-book" method="POST" class="book-form")
+                div.form-group
+                    label(for="title") Title
+                    input#title(type="text" name="title" required placeholder="Enter book title")
+                div.form-group
+                    label(for="genreID") Genre ID
+                    input#genreID(type="text" name="genreID" required placeholder="Enter genre ID")
+                div.form-group
+                    label(for="author") Author
+                    input#author(type="text" name="author" required placeholder="Enter author's name")
+                div.form-group
+                    label(for="publisher") Publisher
+                    input#publisher(type="text" name="publisher" required placeholder="Enter publisher's name")
+                div.form-group
+                    label(for="yearPublished") Year Published
+                    input#yearPublished(type="number" name="yearPublished" required placeholder="Enter year of publication")
+                div.form-group
+                    label(for="copies") Copies
+                    input#copies(type="number" name="copies" required placeholder="Enter number of copies available")
+                div.form-group
+                    label(for="description") Description
+                    textarea#description(name="description" required placeholder="Enter book description")
+                div.form-actions
+                    button(type="submit" class="btn-submit book--submit") Submit

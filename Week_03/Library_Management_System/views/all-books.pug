@@ -1,0 +1,21 @@
+extends baseTemplate 
+block main
+    section.dashboard--section
+        include partials/sidebar
+        div.content
+            header
+            section
+                h2 Books List
+                table
+                    thead
+                        tr
+                            th Title
+                            th Date Added
+                            th Author
+                            th Availability
+                    tbody
+                        tr
+                            td book.title
+                            td book.dateAdded
+                            td book.author
+                            td book.isAvailable 

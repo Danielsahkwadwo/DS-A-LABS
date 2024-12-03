@@ -1,0 +1,17 @@
+extends baseTemplate 
+block main 
+    div.login--container
+      div.login-card
+        h1 Login to Library
+        form.class="login-form"
+          div.form-group
+            label(for="email") Email
+            input#email(type="email" name="email" required placeholder="Enter your email")
+          div.form-group
+            label(for="password") Password
+            input#password(type="password" name="password" required placeholder="Enter your password")
+          div.form-actions 
+            button(type="submit" class="btn-submit user--login") Login
+        div.register-link
+          p.forgotPassword Forgot password? 
+          a(href="/register") Reset Here
