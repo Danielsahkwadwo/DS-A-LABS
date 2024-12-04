@@ -6,16 +6,35 @@ block main
             header
             section
                 h2 Books List
+                div.popover--container
+                    div.popover
+                        div
+                            div.popover-content
+                                p Are you sure you want to delete this item? This action cannot be reverted
+                            div.buttons
+                                button.cancel-button(onclick="") Cancel
+                                button.delete-button(onclick="deleteBook()") Delete
+
                 table
                     thead
                         tr
+                            th Created At
                             th Title
-                            th Date Added
-                            th Author
+                            th Description
                             th Availability
+                            th Action
+                            th Transaction
                     tbody
-                        tr
-                            td book.title
-                            td book.dateAdded
-                            td book.author
-                            td book.isAvailable 
+                        each book in books
+                            tr
+                                td=book.created_at.toLocaleString("en-US",{year:"numeric", month:"short",day:"numeric"})
+                                td=book.title
+                                td=book.description.length < 30 ? book.description : book.description.substring(0,30)+"..."
+                                td=book.available===1? "available":"unavailable"
+                                td.action--btns 
+                                    a.edit--btn(href=`/edit-book/${book.id}`) 
+                                        ion-icon(name="create-outline" color="red")
+                                    button.del--btn(onclick=`showDeleteModal(${book.id})`)
+                                        ion-icon(name="trash-outline")
+                                td 
+                                    button.view--btn view

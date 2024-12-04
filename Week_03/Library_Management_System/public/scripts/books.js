@@ -157,6 +157,24 @@ const deleteBook = async () => {
     .catch((err) => console.log(err));
 };
 
+//borrow book and make transaction
+const borrowBook = async (id) => {
+  await fetch(`/api/v1/transactions/create-transaction/${id}`, {
+    method: "POST",
+  })
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      if (data.status === "success") {
+        showAlert("success", "Book borrowed successfully");
+      }
+      if (data.status === "failed") {
+        showAlert("error", "an error occured while borrowing book");
+      }
+    })
+    .catch((err) => console.log(err));
+};
+
 if (bookSubmit) {
   bookSubmit.addEventListener("click", (e) => {
     e.preventDefault();

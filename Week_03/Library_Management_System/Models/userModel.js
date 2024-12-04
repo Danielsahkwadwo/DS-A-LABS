@@ -67,7 +67,7 @@ const login = async function (email, password) {
   return userRow[0];
 };
 
-const borrowBook = async function (userId, bookId) {
+const borrowBook = async function (userId) {
   const userQuery = `UPDATE users SET borrowed_books = borrowed_books + 1 WHERE userId = ?`;
   const values = [userId];
   const userRow = await db.query(userQuery, values);

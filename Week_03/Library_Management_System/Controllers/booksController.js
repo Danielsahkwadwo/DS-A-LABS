@@ -5,6 +5,7 @@ const {
   getBookByTitle,
   editBook,
   deleteBook,
+  getAvailableBooks,
 } = require("../Models/bookModel");
 
 exports.addNewBook = async (req, res, next) => {
@@ -53,9 +54,7 @@ exports.getBooks = async (req, res, next) => {
   try {
     const result = await getAllBooks();
     if (!result) throw new Error("an error occurred");
-    res
-      .status(200)
-      .render("dashboard", { books: result.reverse() });
+    res.status(200).render("all-books", { books: result.reverse() });
   } catch (error) {
     res.status(400);
     next(error);
@@ -64,7 +63,7 @@ exports.getBooks = async (req, res, next) => {
 
 exports.browseBooks = async (req, res, next) => {
   try {
-    const result = await getAllBooks();
+    const result = await getAvailableBooks();
     if (!result) throw new Error("an error occurred");
     res.status(200).render("books", { books: result.reverse() });
   } catch (error) {
@@ -84,6 +83,19 @@ exports.getBook = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.getBookDetails = async (req, res, next) => {
+  try {
+    const result = await getBookById(req.params.id);
+    if (result.length === 0) throw new Error("book not found");
+
+    res.status(200).render("book-details", { book: result[0] });
+  } catch (error) {
+    res.status(400);
+    next(error);
+  }
+};
+
 exports.modifyBook = async (req, res, next) => {
   try {
     const {

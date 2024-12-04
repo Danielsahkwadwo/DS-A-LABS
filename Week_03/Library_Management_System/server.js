@@ -10,7 +10,7 @@ userModel.createUserTable();
 createBookTable();
 createGenreModel();
 createReservationModel();
-createTransactionModel();
+createTransactionModel.createTransactionTable();
 
 //start server
 const server = app.listen(process.env.PORT, () => {

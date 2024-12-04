@@ -6,8 +6,8 @@ const createTransactionTable = async () => {
         bookId INT NOT NULL,
         userId INT NOT NULL,
         borrowDate DATE NOT NULL,
-        returnDate DATE NOT NULL,
-        isReturned BOOLEAN,
+        returnDate DATE,
+        isReturned BOOLEAN default false,
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )
     `;
@@ -21,4 +21,19 @@ const createTransactionTable = async () => {
     });
 };
 
-module.exports = createTransactionTable;
+const createTransaction = async (bookId, userId, borrowDate) => {
+  const query = `INSERT INTO transaction (bookId, userId, borrowDate) VALUES (?, ?, ?)`;
+  const values = [bookId, userId, borrowDate];
+  const result = await db.query(query, values);
+  return result;
+};
+
+const getAllTransactions = async () => {
+  const result = await db.query(`SELECT * FROM transaction`);
+  return result[0];
+};
+module.exports = {
+  createTransactionTable,
+  createTransaction,
+  getAllTransactions,
+};

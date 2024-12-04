@@ -10,7 +10,7 @@ publisher VARCHAR(255) NOT NULL,
 yearPublished INT NOT NULL,
 available BOOLEAN DEFAULT TRUE,
 copies INT NOT NULL,
-description VARCHAR(255),
+description TEXT,
 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )
 `;
@@ -52,6 +52,21 @@ exports.getAllBooks = async () => {
   return rows[0];
 };
 
+exports.getAvailableBooks = async () => {
+  const rows = await db.query(`SELECT * FROM books WHERE available = ?`, [
+    true,
+  ]);
+  return rows[0];
+};
+
+exports.setAvailable = async (bookId) => {
+  const rows = await db.query(`UPDATE books SET available = ? WHERE id = ?`, [
+    false,
+    bookId,
+  ]);
+  return rows[0];
+};
+
 exports.getBookById = async (bookId) => {
   const rows = await db.query(`SELECT * FROM books WHERE id = ?`, [bookId]);
   return rows[0];
@@ -89,6 +104,14 @@ exports.editBook = async (
       description,
       bookId,
     ]
+  );
+  return rows[0];
+};
+
+exports.decreaseBookCopies = async (bookId) => {
+  const rows = await db.query(
+    `UPDATE books SET copies = copies - 1 WHERE id = ?`,
+    [bookId]
   );
   return rows[0];
 };

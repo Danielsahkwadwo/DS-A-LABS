@@ -21,7 +21,7 @@ a {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: dodgerblue;
+  background-color: orange;
   padding: 1rem 2rem;
 }
 
@@ -42,9 +42,19 @@ a {
 
 /* Hero Section */
 .hero {
-  background: linear-gradient(135deg, dodgerblue, #1e90ff);
+  /* background: linear-gradient(135deg, dodgerblue, #1e90ff); */
   padding: 4rem 2rem;
   text-align: center;
+  background-image: linear-gradient(#0a0a0a86,#000000a8),url("./../images/wallpaperflare.com_wallpaper.jpg");
+  width: 100%;
+  height: 82vh;
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .hero .container {
@@ -63,7 +73,7 @@ a {
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: orange;
   color: #fff;
   padding: 0.8rem 2rem;
   border-radius: 5px;
@@ -74,40 +84,6 @@ a {
 
 .btn-primary:hover {
   background-color: #0056b3;
-}
-
-/* Features Section */
-.features {
-  background-color: #fff;
-  color: #333;
-  padding: 4rem 2rem;
-}
-
-.features .container {
-  max-width: 1200px;
-  margin: auto;
-  display: flex;
-  gap: 2rem;
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.feature-card {
-  background-color: #f0f8ff;
-  border: 1px solid #007acc;
-  border-radius: 10px;
-  padding: 2rem;
-  text-align: center;
-  max-width: 300px;
-}
-
-.feature-card h3 {
-  font-size: 1.5rem;
-  margin-bottom: 1rem;
-}
-
-.feature-card p {
-  font-size: 1rem;
 }
 
 /* General Styles for Books Page */
@@ -133,14 +109,14 @@ a {
 #search {
   padding: 0.8rem;
   width: 50%;
-  border: 2px solid #007bff;
+  border: 2px solid orange;
   border-radius: 5px 0 0 5px;
   font-size: 1rem;
 }
 
 #search-btn {
   padding: 0.8rem 1.5rem;
-  background-color: dodgerblue;
+  background-color: orange;
   color: white;
   border: none;
   font-size: 1rem;
@@ -165,12 +141,12 @@ a {
   border-radius: 10px;
   padding: 1.5rem;
   text-align: center;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.123)
 }
 
 .book-title {
   font-size: 1.5rem;
-  color: dodgerblue;
+  color: orange;
   margin-bottom: 0.5rem;
 }
 
@@ -179,18 +155,18 @@ a {
   color: #555;
   margin-bottom: 1rem;
 }
-.book-available{
+.book-available {
   color: #555;
 }
 .buttons {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-center;
   gap: 1rem;
 }
 
 .btn-primary,
 .btn-secondary {
-  padding: 0.5rem 1rem;
+  padding: 0.8rem 1rem;
   border-radius: 5px;
   font-size: 1rem;
   text-align: center;
@@ -199,7 +175,7 @@ a {
 }
 
 .btn-primary {
-  background-color: #007bff;
+  background-color: orange;
   color: white;
 }
 
@@ -218,7 +194,7 @@ a {
 
 /* Footer */
 footer {
-  background-color: dodgerblue;
+  background-color: orange;
   text-align: center;
   padding: 1rem;
   font-size: 0.9rem;
@@ -293,7 +269,7 @@ footer {
 .login-card h1 {
   font-size: 1.8rem;
   font-weight: bold;
-  color: #003c82; /* Rich blue */
+  color: orange; /* Rich blue */
   text-align: center;
   margin-bottom: 20px;
 }
@@ -321,7 +297,7 @@ footer {
 }
 
 .form-group input:focus {
-  border-color: #3a7bd5;
+  border-color: orange;
   box-shadow: 0 0 5px rgba(58, 123, 213, 0.5);
   outline: none;
 }
@@ -330,7 +306,7 @@ footer {
 .btn-submit {
   padding: 12px;
   font-size: 1rem;
-  background-color: #3a7bd5;
+  background-color: orange;
   color: white;
   border: none;
   border-radius: 8px;
@@ -396,7 +372,7 @@ ion-icon {
 }
 .view--btn {
   border: none;
-  background-color: dodgerblue;
+  background-color: orange;
   padding: 6px 15px;
   color: white;
   border-radius: 5px;
@@ -436,7 +412,7 @@ ion-icon {
 .buttons {
   margin-top: 16px;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 button {
@@ -455,4 +431,62 @@ button {
 .delete-button {
   background-color: #f44336;
   color: #fff;
+}
+
+/* single book styles */
+.book--container {
+  width: 60%;
+  margin: 0 auto;
+  padding: 4rem 2rem;
+  color: #555;
+}
+.book--container .title--and--date {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  & h2 {
+    text-transform: capitalize;
+  }
+}
+.book--container small {
+  font-weight: bold;
+}
+.book--description {
+  margin-top: 2rem;
+  text-align: justify;
+}
+
+.book--info {
+  margin-top: 10px;
+}
+.available {
+  background-color: rgba(8, 184, 116, 0.568);
+  color: white;
+  padding: 0.5rem 2rem;
+  cursor: unset;
+}
+.unavailable {
+  background-color: rgba(230, 16, 34, 0.445);
+  color: white;
+  padding: 0.5rem 2rem;
+  cursor: unset;
+}
+.cont {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 1rem 0;
+}
+.book--button {
+  margin-top: 2rem;
+  & button {
+    padding: 0.5rem 2rem;
+    background-color: orange;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1rem;
+    cursor: pointer;
+    text-decoration: none;
+  }
 }

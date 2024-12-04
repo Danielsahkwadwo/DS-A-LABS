@@ -1,0 +1,22 @@
+extends baseTemplate 
+block main
+    div.book--container
+        div.book--details
+            div.title--and--date
+                h2=book.title
+                small=`Year Published: ${book.yearPublished}`
+            div.cont
+                div
+                    div.book--info 
+                        blockquote=`Author: ${book.author}`
+                    div.book--info 
+                        blockquote=`Published By: ${book.publisher}`
+                div 
+                    if book.available===1
+                        button.available Available
+                    if book.available===0
+                        button.unavailable Unavailable
+            div.book--description
+                p=book.description
+            div.book--button(onclick=`borrowBook(${book.id})`) 
+                button Book Now

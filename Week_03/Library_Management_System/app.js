@@ -4,13 +4,16 @@ const app = express();
 const dotenv = require("dotenv");
 const userRoutes = require("./Routes/userRoutes");
 const bookRoutes = require("./Routes/bookRoutes");
+const transactionRoutes = require("./Routes/transactionRoutes");
 const globalErrorHandler = require("./Middlewares/globalErrorHandler");
 const {
   getBooks,
   getBook,
   browseBooks,
+  getBookDetails,
 } = require("./Controllers/booksController");
 const { protect } = require("./Middlewares/authMiddleware");
+const { allTransactions } = require("./Controllers/transactionController");
 
 dotenv.config({ path: ".env" });
 
@@ -28,12 +31,15 @@ app.get("/", (req, res) =>
 app.get("/books", protect, browseBooks);
 app.get("/dashboard", protect, getBooks);
 app.get("/edit-book/:id", getBook);
-app.get("/add-book", (req, res) => res.render("addBook"));
-app.get("/add-user", (req, res) => res.render("addUser"));
+app.get("/book/:id", getBookDetails);
+app.get("/transactions", protect, allTransactions);
+app.get("/add-book", protect, (req, res) => res.render("addBook"));
+app.get("/add-user", protect, (req, res) => res.render("addUser"));
 app.get("/login", (req, res) => res.render("login"));
 
 app.use("/api/v1/users", userRoutes);
 app.use("/api/v1/books", bookRoutes);
+app.use("/api/v1/transactions", transactionRoutes);
 
 app.use("*", (req, res) => res.status(404).json({ error: "Route not found" }));
 

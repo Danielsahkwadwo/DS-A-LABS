@@ -2,9 +2,11 @@ div.sidebar
     if user
         h3 Welcome, #{user.name.split(" ")[0]}
     ul
-        if user.role==="admin"
+        if user && user.role==="admin"
             li: a(href="/dashboard") Dashboard
             li: a(href="/add-book") Add Book
             li: a(href="/add-user") Add User
+            li: a(href="/transactions") Transactions
+            li: a(href="/add-user") All Users
         li: a(href="loan-history.html") Loan History
         button.logout--btn Logout

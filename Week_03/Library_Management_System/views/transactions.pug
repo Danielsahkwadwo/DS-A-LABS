@@ -1,0 +1,26 @@
+extends baseTemplate 
+block main
+    section.dashboard--section
+        include partials/sidebar
+        div.content
+            header
+            section
+                h2 All Transactions
+                table
+                    thead
+                        tr
+                            th Created At
+                            th Book
+                            th Borrower
+                            th Borrow Date
+                            th Return Date
+                            th Return Status
+                    tbody
+                        each transaction in transactions
+                            tr
+                                td=transaction.created_at.toLocaleString("en-US",{year:"numeric", month:"short",day:"numeric"})
+                                td=transaction.bookId
+                                td=transaction.userId
+                                td=transaction.borrowDate.toLocaleString("en-US")
+                                td=transaction.returnDate?transaction.returnDate:"N/A"
+                                td=transaction.isReturned===0?"False":"True"
