@@ -12,8 +12,9 @@ const {
   browseBooks,
   getBookDetails,
 } = require("./Controllers/booksController");
-const { protect } = require("./Middlewares/authMiddleware");
+const { protect, adminRoleAuth } = require("./Middlewares/authMiddleware");
 const { allTransactions } = require("./Controllers/transactionController");
+const { getAllUsers } = require("./Controllers/userControllers");
 
 dotenv.config({ path: ".env" });
 
@@ -32,6 +33,7 @@ app.get("/books", protect, browseBooks);
 app.get("/dashboard", protect, getBooks);
 app.get("/edit-book/:id", getBook);
 app.get("/book/:id", getBookDetails);
+app.get("/users", protect, adminRoleAuth, getAllUsers);
 app.get("/transactions", protect, allTransactions);
 app.get("/add-book", protect, (req, res) => res.render("addBook"));
 app.get("/add-user", protect, (req, res) => res.render("addUser"));

@@ -13,7 +13,7 @@ exports.createCookie = function (res, token) {
     sameSite: true,
     httpOnly: true,
     secure: true,
-    expires: new Date(Date.now() + 86400 * 7 * 1000),
+    expires: new Date(Date.now() + 86400 * 1 * 1000),
   });
   return cookies;
 };

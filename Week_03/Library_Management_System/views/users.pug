@@ -1,0 +1,26 @@
+extends baseTemplate 
+block main
+    section.dashboard--section
+        include partials/sidebar
+        div.content
+            header
+            section
+                h2 All Transactions
+                table
+                    thead
+                        tr
+                            th Created At
+                            th Username
+                            th Email
+                            th Phone Number
+                            th Role
+                            th Borrowed Books
+                    tbody
+                        each user in users
+                            tr
+                                td=user.created_at.toLocaleString("en-US",{year:"numeric", month:"short",day:"numeric"})
+                                td=user.name
+                                td=user.email
+                                td=user.phone
+                                td=user.role
+                                td=user.borrowed_books

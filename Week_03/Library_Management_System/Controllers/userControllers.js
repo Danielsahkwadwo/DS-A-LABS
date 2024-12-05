@@ -29,14 +29,11 @@ exports.registerUser = async (req, res, next) => {
   }
 };
 
-exports.getAllUsers = async (req, res) => {
+exports.getAllUsers = async (req, res,next) => {
   try {
     const result = await userModel.getAllUsers();
     if (!result) throw new Error("an error occurred while getting users");
-    res.status(200).json({
-      status: "success",
-      data: result,
-    });
+    res.status(200).render("users", { users: result });
   } catch (error) {
     res.status(400);
     next(error);

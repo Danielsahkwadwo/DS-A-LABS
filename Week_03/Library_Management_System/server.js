@@ -16,3 +16,4 @@ createTransactionModel.createTransactionTable();
 const server = app.listen(process.env.PORT, () => {
   console.log(`server connected on port ${process.env.PORT}`);
 });
+
