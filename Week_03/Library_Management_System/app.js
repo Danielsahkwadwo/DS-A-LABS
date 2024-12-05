@@ -17,7 +17,6 @@ const { allTransactions } = require("./Controllers/transactionController");
 const { getAllUsers } = require("./Controllers/userControllers");
 
 dotenv.config({ path: ".env" });
-
 app.use(express.json());
 app.use(cookieParser());
 
