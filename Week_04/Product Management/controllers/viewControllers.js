@@ -4,6 +4,7 @@ const {
   getProducts,
   getSingleProduct,
   getProductsByCategory,
+  getProductByQuery,
 } = require("./products");
 exports.renderHome = async (req, res) => {
   const categories = await Category.find();
@@ -17,6 +18,8 @@ exports.renderProducts = async (req, res, next) => {
   let products;
   if (Object.keys(req.query).length === 0) {
     products = await getProductsByCategory(req, res, next);
+  } else {
+    products = await getProductByQuery(req, res, next);
   }
   res.status(200).render("products", { title: "Products", products });
 };

@@ -60,8 +60,8 @@ exports.deleteProduct = async (req, res, next) => {
       await fs.unlink(
         path.join(
           __dirname,
-          "..",
-          `/${productToDelete.imagePath.replace("\\", "/")}`
+          "../public/uploads/",
+          `${productToDelete.imagePath.replace("\\", "/")}`
         ),
         (err) => {
           if (err) {
@@ -106,14 +106,27 @@ exports.getProducts = async (req, res, next) => {
 
 exports.getProductsByCategory = async (req, res, next) => {
   try {
+    const products = await Product.find().populate("categoryID");
+
+    if (!products) throw new Error("an error occurred while getting products");
+    // res.status(200).render("products", { products });
+    // res.status(200).json({ status: "success", products });
+    return products;
+  } catch (error) {
+    next(error);
+  }
+};
+
+exports.getProductByQuery = async (req, res, next) => {
+  try {
     const products = await Product.aggregate([
       {
-        // Stage 1: Perform a lookup to join the products with categories
+        // Stage 1: Lookup to join products with categories
         $lookup: {
-          from: "categories", // The name of the collection to join with
-          localField: "categoryID", // Field in the products collection
-          foreignField: "_id", // Field in the categories collection
-          as: "category", // Output array field
+          from: "categories",
+          localField: "categoryID",
+          foreignField: "_id",
+          as: "category",
         },
       },
       {
@@ -121,38 +134,27 @@ exports.getProductsByCategory = async (req, res, next) => {
         $unwind: "$category",
       },
       {
-        // Stage 3: Group by categoryID and categoryName, and collect the products
-        $group: {
-          _id: {
-            categoryID: "$categoryID",
-            categoryName: "$category.categoryName",
-          },
-          products: {
-            $push: {
-              productName: "$productName",
-              price: "$price",
-              quantity: "$quantity",
-              description: "$description",
-              imagePath: "$imagePath",
-            },
-          },
+        // Stage 3: Match products where the categoryName matches the query
+        $match: {
+          "category.categoryName": req.query.category,
         },
       },
       {
-        // Stage 4: Project the desired fields for output
+        // Stage 4: Project desired fields for output
         $project: {
-          _id: 0,
-          categoryID: "$_id.categoryID",
-          categoryName: "$_id.categoryName",
-          products: 1,
+          _id: 1,
+          productName: 1,
+          price: 1,
+          quantity: 1,
+          description: 1,
+          imagePath: 1,
+          categoryName: "$category.categoryName",
         },
       },
     ]);
-
     if (!products) throw new Error("an error occurred while getting products");
-    // res.status(200).render("products", { products });
-    // res.status(200).json({ status: "success", products });
     return products;
+    // res.status(200).json({ status: "success", products });
   } catch (error) {
     next(error);
   }
