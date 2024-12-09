@@ -1,0 +1,27 @@
+doctype html 
+html 
+    head 
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width,initial-scale=1")
+        link(rel="stylesheet", type="text/css", href="/resources/css/styles.css")
+        script(src='https://cdn.tailwindcss.com')
+        title #{title}
+    body(class="bg-blue-100/20") 
+        //header here
+        include partials/header 
+        //- this side contain the main body
+
+        //main content here
+        block main
+
+
+        // footer here
+        include partials/footer 
+
+        //scripts here
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        script(src="/scripts/Alert.js") 
+        script(src="/scripts/users.js") 
+        script(src="/scripts/books.js")      

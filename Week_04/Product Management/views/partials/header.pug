@@ -1,0 +1,14 @@
+header
+  nav.flex.justify-between.items-center.bg-gray-700.text-white.px-10.py-5.gap-10
+    h3(class="uppercase flex w-[40%] font-semibold Product Management") Product Management
+    form.w-full.flex.items-center.justify-center(action="/products" method="GET")
+      input(class="border-[1px] rounded-md border-blue-300 p-2 px-5 w-[100%] text-slate-700")#search(type='search' name='search' placeholder='Search product...')
+    ul.items-center.flex.gap-5.uppercase.text-sm
+      li
+        a(href='/') Home
+      li
+        a(href='/products') Products
+      li
+        a(href='/login') Login
+      li
+        a(href='/dashboard/profile') Dashboard

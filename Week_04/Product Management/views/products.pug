@@ -1,0 +1,17 @@
+extends baseTemplate 
+block main
+    main
+        section
+            div.row
+                div.main--container
+                    each product in products
+                        h2.capitalize.text-left.text-2xl.font-semibold.text-slate-700.mb-5.mt-10=product.categoryName
+                        div.product--cards.py-2.pb-5.grid.grid-cols-4.items-center.gap-4.gap-y-2
+                            each item in product.products
+                                div(class="card  shadow-xl")
+                                    img(class="w-full h-[160px]")(src=`/uploads/${item.imagePath}` alt="product image")
+                                    div.bg-white.p-5
+                                        h3.text-lg.text-teal-700.font-bold=`GHS ${item.price}`
+                                        h3(class="font-semibold text-md text-slate-600/90 capitalize tracking-wider")=item.productName    
+                                        p.mt-3.pb-5=item.description
+                            

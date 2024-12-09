@@ -1,0 +1,16 @@
+extends baseTemplate 
+block main 
+    section.header
+        div.row
+            div.main--container
+    section.my-5
+        div.row
+            div.main--container
+                h1.font-semibold.text-3xl.text-center.capitalize  Product Categories
+            
+                div.mt-8.categories--slider.flex.items-center.gap-5.overflow-x-scroll.py-2
+                    each category in categories
+                        a(href=`/products?category=${category.categoryName}`)
+                            div(class="category--card w-[200px] h-[200px] bg-gray-300 rounded-md flex flex-shrink-0 justify-center items-center")
+                                h3.text-2xl.font-semibold=category.categoryName
+        

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Products</title>
+  </head>
+  <style>
+    .row {
+      max-width: 1140px;
+      margin: 0 auto;
+    }
+    .main--container {
+      padding: 0 2rem;
+      width: 100%;
+    }
+    .header {
+      background-image: linear-gradient(#00000080, #00000065),
+        url("./../public/resources/images/header--image.avif");
+      width: 100%;
+      height: 60vh;
+      background-size: cover;
+      background-position: center;
+    }
+  </style>
+  <body>
+    <main>
+      <div class="dashboard flex">
+        <div class="sidebar bg-slate-600 text-white w-1/6 p-2 pt-16">
+          <h3 class="font-semibold mb-10 px-3">Welcome Daniel</h3>
+          <ul class="flex flex-col gap-3">
+            <li><a class="hover:bg-slate-400 flex px-5 py-2 rounded-sm" href="/profile">Profile</a></li>
+            <li><a class="hover:bg-slate-400 flex px-5 py-2 rounded-sm" href="/products">Products</a></li>
+            <li><a class="hover:bg-slate-400 flex px-5 py-2 rounded-sm" href="/add-product">Add Product</a></li>
+            <li><a class="hover:bg-slate-400 flex px-5 py-2 rounded-sm" href="/add-category">Add Category</a></li>
+            <li><a class="hover:bg-slate-400 flex px-5 py-2 rounded-sm" href="/users">All Users</a></li>
+          </ul>
+        </div>
+        <div class="dashboard--content w-full">
+          <div class="shadow-md w-full py-4 px-5 text-center font-semibold">
+            <h1 class="text-lg">All Products</h1>
+          </div>
+          <div class="p-10">
+            <table class="w-full text-left">
+              <thead>
+                <tr class="bg-slate-600 text-white">
+                  <th class="p-3">ID</th>
+                  <th class="p-3">Product Name</th>
+                  <th class="p-3">Category</th>
+                  <th class="p-3">Price</th>
+                  <th class="p-3">Quantity</th>
+                  <th class="p-3">Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="p-3">1</td>
+                  <td class="p-3">Hp Laptop</td>
+                  <td class="p-3">Electronics</td>
+                  <td class="p-3">GHS 5000</td>
+                  <td class="p-3">5</td>
+                  <td class="p-3">
+                    <button class="px-2 py-1 bg-blue-600/60 text-white rounded-sm">Edit</button>
+                    <button class="px-2 py-1 bg-red-500/80 text-white rounded-sm">Delete</button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="pagination mt-5">
+              <ul class="flex gap-2">
+                <a href="?page=1" class="px-3 py-1 bg-slate-600/60 text-white rounded-sm">1</a>
+                <a href="?page=1" class="px-3 py-1 bg-slate-600/60 text-white rounded-sm">2</a>
+                <a href="?page=1" class="px-3 py-1 bg-slate-600/60 text-white rounded-sm">3</a>
+                <a href="?page=1" class="px-3 py-1 bg-slate-600/60 text-white rounded-sm">4</a>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+extends baseTemplate 
+block main
+    main
+        div.dashboard.flex
+            include partials/sidebar
+            div.dashboard--content.w-full
+                div.shadow-md.w-full.py-4.px-5.text-center.font-semibold
+                    h1.text-lg Add Category
+                div.p-10
+                    form(action="/categories/add" method="post")
+                        label.block.mb-2(for) Category Name
+                        input(class="w-[60%] border-[1.5px] border-slate-500 px-5 py-2 rounded-md mb-5")#categoryName(type='text' name='categoryName' placeholder='Enter Category')
+                        label.block.mb-2(for) Category Description
+                        textarea(class="w-[60%] border-[1.5px] border-slate-500 px-5 py-2 rounded-md mb-5")(name='description' placeholder='Enter Category Description' rows='5')
+                        input(class="w-[60%] border-none bg-slate-600 text-white px-5 py-2 rounded-md mb-5 cursor-pointer")(type='submit' value='Add Category')

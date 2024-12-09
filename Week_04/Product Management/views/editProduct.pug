@@ -1,0 +1,30 @@
+extends baseTemplate 
+block main
+    main
+        div.dashboard.flex
+            include partials/sidebar
+            div.dashboard--content.w-full
+                div.shadow-md.w-full.py-4.px-5.text-center.font-semibold
+                    h1.text-lg Edit Product
+                div.p-10
+                    form(action=`/products/modifyProduct/${productId}` method="POST" enctype="multipart/form-data")
+                        label.block.mb-2.mt-3(for='name') Product Name
+                        input#productName(class="w-[60%] border-[1.5px] border-slate-500 px-5 py-2 rounded-md mb-5")(type='text' name='productName' placeholder='Enter Product Name' value=product.productName required)
+                        div(class="grid grid-cols-2 gap-5 w-[60%]")
+                            div
+                                label.block.mb-2(for='price') Price
+                                input#price(class="w-full border-[1.5px] border-slate-500 px-5 py-2 rounded-md mb-5")(type='number' name='price' placeholder='Enter Price' value=product.price required)
+                            div
+                                label.block.mb-2(for='quantity') Quantity
+                                input#quantity(class="w-full border-[1.5px] border-slate-500 px-5 py-2 rounded-md mb-5")(type='number' name='quantity' placeholder='Enter Quantity' value=product.quantity required )
+                        label.block.mb-2(for='category') Category
+                        select(class="w-[60%] border-[1.5px] border-slate-500 px-5 py-2 rounded-md mb-5")(name='categoryID')
+                                option(value=`${product.categoryID._id}`)=product.categoryID.categoryName
+                                each category in categories
+                                    option(value=category._id)=category.categoryName
+                        label.block.mb-2(for='description') Description
+                        textarea(class="w-[60%] border-[1.5px] border-slate-500 px-5 py-2 rounded-md mb-5")(name='description' rows='5' placeholder="Enter Product Description")=product.description
+                        div
+                            label.block.mb-2(for='image') Product Image
+                            input#imagePath(class="w-[60%] border-[1.5px] border-slate-500 px-5 py-2 rounded-md mb-5")(type='file' name='imagePath' accept=".jpg,.png,.jpeg" file=product.imagePath)
+                        input(class="w-[60%] border-none bg-slate-600 text-white px-5 py-2 rounded-md mb-5")(type='submit' value='Update Product')
