@@ -4,12 +4,15 @@ block main
         section
             div.row
                 div.main--container
+                    h2.text-center.text-2xl.text-slate-700.mt-5.font-semibold.capitalize #{productTitle}
+                    h4 #{products.length} Product(s) found
                     div.product--cards.py-10.pb-5.grid.grid-cols-4.items-center.gap-4.gap-y-5
                         each product in products
                             div(class="card  shadow-xl")
                                 img(class="w-full h-[160px]")(src=`/uploads/${product.imagePath}` alt="product image")
                                 div.bg-white.p-5
-                                    h3.text-lg.text-teal-700.font-bold=`GHS ${product.price}`
+                                    div.flex.items-center.justify-between.mb-7.mt-2
+                                        h3.text-lg.text-teal-700.font-bold=`GHS ${product.price}`
+                                        p(class="font-semibold bg-blue-400/20 px-3 py-1 rounded-sm text-sm")=product.categoryName || product.categoryID.categoryName
                                     h3(class="font-semibold text-md text-slate-600/90 capitalize tracking-wider")=product.productName    
-                                    p.mt-3.pb-5=product.description
                             

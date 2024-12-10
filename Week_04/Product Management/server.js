@@ -1,5 +1,4 @@
 const express = require("express");
-const cookieParser = require("cookie-parser");
 const session = require("express-session");
 const dotenv = require("dotenv");
 const mongoose = require("mongoose");
@@ -8,7 +7,7 @@ const productRoutes = require("./routes/products");
 const categoryRoutes = require("./routes/categories");
 const viewRoutes = require("./routes/viewRoutes");
 const globalErrorHandler = require("./middlewares/globalErrorHandler");
-const { getCategories } = require("./controllers/categories");
+const mongoSanitize=  require("express-mongo-sanitize");
 
 const app = express();
 dotenv.config({ path: ".env" });
@@ -28,7 +27,7 @@ mongoose
 //middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// app.use(cookieParser());
+app.use(mongoSanitize());
 
 //configuring session middleware
 app.use(

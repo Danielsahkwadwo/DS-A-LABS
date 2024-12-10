@@ -91,26 +91,21 @@ exports.getProducts = async (req, res, next) => {
   }
 };
 
-// exports.getSingleProduct = async (req, res, next) => {
-//   try {
-//     console.log(req);
-//     // const product = await Product.findById(id).populate("categoryID");
-//     // if (!product) throw new Error("product not found");
-//     const product = "here";
-//     console.log(product);
-//     return product;
-//   } catch (error) {
-//     next(error);
-//   }
-// };
+exports.getSingleProduct = async (req, res, next) => {
+  try {
+    const product = await Product.findById(id).populate("categoryID");
+    if (!product) throw new Error("product not found");
+    return product;
+  } catch (error) {
+    next(error);
+  }
+};
 
 exports.getProductsByCategory = async (req, res, next) => {
   try {
     const products = await Product.find().populate("categoryID");
 
     if (!products) throw new Error("an error occurred while getting products");
-    // res.status(200).render("products", { products });
-    // res.status(200).json({ status: "success", products });
     return products;
   } catch (error) {
     next(error);
@@ -121,7 +116,7 @@ exports.getProductByQuery = async (req, res, next) => {
   try {
     const products = await Product.aggregate([
       {
-        // Stage 1: Lookup to join products with categories
+        // Lookup to join products with categories
         $lookup: {
           from: "categories",
           localField: "categoryID",
@@ -130,17 +125,17 @@ exports.getProductByQuery = async (req, res, next) => {
         },
       },
       {
-        // Stage 2: Unwind the category array to de-nest the lookup result
+        //Unwind the category array to de-nest the lookup result
         $unwind: "$category",
       },
       {
-        // Stage 3: Match products where the categoryName matches the query
+        // Match products where the categoryName matches the query
         $match: {
           "category.categoryName": req.query.category,
         },
       },
       {
-        // Stage 4: Project desired fields for output
+        // Project desired fields for output
         $project: {
           _id: 1,
           productName: 1,
@@ -154,7 +149,6 @@ exports.getProductByQuery = async (req, res, next) => {
     ]);
     if (!products) throw new Error("an error occurred while getting products");
     return products;
-    // res.status(200).json({ status: "success", products });
   } catch (error) {
     next(error);
   }
@@ -162,11 +156,11 @@ exports.getProductByQuery = async (req, res, next) => {
 
 exports.searchProduct = async (req, res, next) => {
   try {
-    const products = await Product.find({
-      productName: req.params.productName,
-    });
+    const query = { $text: { $search: req.query.search } };
+    const products = await Product.find(query).populate("categoryID");
     if (!products) throw new Error("an error occurred while getting products");
-    res.status(200).render("products", { products });
+
+    return products;
   } catch (error) {
     next(error);
   }
