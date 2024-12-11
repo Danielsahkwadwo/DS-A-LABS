@@ -21,3 +21,14 @@ exports.protect = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.isAdmin = (req, res, next) => {
+  try {
+    if (req.user.role !== "admin")
+      throw new Error("Not authorized as an admin");
+    next();
+  } catch (error) {
+    res.status(401);
+    next(error);
+  }
+};

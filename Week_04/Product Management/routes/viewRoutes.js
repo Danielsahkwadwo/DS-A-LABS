@@ -17,6 +17,7 @@ router.get("/", renderHome);
 router.get("/products", renderProducts);
 router.get("/login", renderLogin);
 router.get("/register", renderRegisterPage);
+
 router.get("/dashboard/profile", protect, renderDashboard);
 router.get("/dashboard/add-product", protect, renderAddProduct);
 router.get("/dashboard/add-category", protect, renderAddCategory);

@@ -42,3 +42,17 @@ exports.loginUser = async (req, res, next) => {
     next(error);
   }
 };
+
+exports.logoutUser = async (req, res, next) => {
+  try {
+    req.session.destroy((err) => {
+      if (err) {
+        throw new Error("an error occurred while loggin out");
+      } else {
+        req.redirect("/login");
+      }
+    });
+  } catch (error) {
+    next(error);
+  }
+};

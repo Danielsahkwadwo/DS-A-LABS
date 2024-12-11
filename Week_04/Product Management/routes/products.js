@@ -6,14 +6,16 @@ const {
   getProductsByCategory,
   getProductByQuery,
 } = require("../controllers/products");
-const { protect } = require("../middlewares/authMiddlewares");
+const { protect, isAdmin } = require("../middlewares/authMiddlewares");
 const uploadImage = require("../utils/multerConfig");
 const router = express.Router();
 
-router.post("/add", protect, uploadImage, addProduct);
-router.post("/modifyProduct/:id", protect, uploadImage, updateProduct);
-router.delete("/deleteProduct/:id", protect, deleteProduct);
-router.get("/groupByCategories",getProductsByCategory)
-router.get("/getByQuery",getProductByQuery)
+router.get("/groupByCategories", getProductsByCategory);
+router.get("/getByQuery", getProductByQuery);
+
+router.use(protect, isAdmin);
+router.post("/add", uploadImage, addProduct);
+router.post("/modifyProduct/:id", uploadImage, updateProduct);
+router.delete("/deleteProduct/:id", deleteProduct);
 
 module.exports = router;
