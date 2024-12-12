@@ -49,7 +49,7 @@ exports.logoutUser = async (req, res, next) => {
       if (err) {
         throw new Error("an error occurred while loggin out");
       } else {
-        req.redirect("/login");
+        res.redirect("/login");
       }
     });
   } catch (error) {

@@ -13,8 +13,8 @@ const {
 const { protect } = require("../middlewares/authMiddlewares");
 const router = express.Router();
 
-router.get("/", renderHome);
-router.get("/products", renderProducts);
+router.get("/", protect, renderHome);
+router.get("/products", protect, renderProducts);
 router.get("/login", renderLogin);
 router.get("/register", renderRegisterPage);
 
