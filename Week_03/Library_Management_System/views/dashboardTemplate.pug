@@ -1,0 +1,33 @@
+doctype html 
+html 
+    head 
+        meta(charset="utf-8")
+        meta(http-equiv="X-UA-Compatible", content="IE=edge")
+        meta(name="viewport", content="width=device-width,initial-scale=1")
+        title #{title}
+        link(rel="stylesheet", type="text/css", href="/css/styles.css")
+        link(rel="stylesheet", type="text/css", href="/css/dashboard_styles.css")
+        link(rel="preconnect", href="https://fonts.gstatic.com")
+        //- link(rel="shortcut icon" type="image/png", href="/img/uenr_logo.png")
+        //- link(rel="stylesheet", type="text/css", href="/css/landing_page_style.css")
+        link(href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,400;0,500;0,600;0,700;1,200;1,300&display=swap", rel="stylesheet")
+        link(rel="preconnect", href="https://fonts.gstatic.com")
+        link(href="https://fonts.googleapis.com/css2?family=Pattaya&display=swap", rel="stylesheet")
+    body 
+        //header here
+        include partials/header 
+        //- this side contain the main body
+
+        //main content here
+        block main
+
+
+        // footer here
+        include partials/footer 
+
+        //scripts here
+        <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+        <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+        script(src="/scripts/Alert.js") 
+        script(src="/scripts/users.js") 
+        script(src="/scripts/books.js")      
