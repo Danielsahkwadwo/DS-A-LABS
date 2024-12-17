@@ -1,4 +1,3 @@
-
 # **Student Management System**
 
 ## **Overview**
@@ -45,33 +44,42 @@ The system uses the following models to manage data:
 
 ### 📌 **Student Endpoints**
 
-| **Method** | **Endpoint**         | **Description**                     |
-|------------|----------------------|-------------------------------------|
-| `GET`     | `/students`           | Retrieve a list of all students     |
-| `GET`     | `/students/:id`       | Retrieve a single student by ID     |
-| `POST`    | `/students`           | Create a new student record         |
-| `PUT`     | `/students/:id`       | Update a student record             |
-| `DELETE`  | `/students/:id`       | Delete a student record             |
+| **Method** | **Endpoint**    | **Description**                 |
+| ---------- | --------------- | ------------------------------- |
+| `GET`      | `/students`     | Retrieve a list of all students |
+| `GET`      | `/students/:id` | Retrieve a single student by ID |
+| `POST`     | `/students`     | Create a new student record     |
+| `PUT`      | `/students/:id` | Update a student record         |
+| `DELETE`   | `/students/:id` | Delete a student record         |
 
 ### 📌 **Course Endpoints**
 
-| **Method** | **Endpoint**         | **Description**                     |
-|------------|----------------------|-------------------------------------|
-| `GET`     | `/courses`            | Retrieve a list of all courses      |
-| `GET`     | `/courses/:id`        | Retrieve a single course by ID      |
-| `POST`    | `/courses`            | Create a new course record          |
-| `PUT`     | `/courses/:id`        | Update a course record              |
-| `DELETE`  | `/courses/:id`        | Delete a course record              |
+| **Method** | **Endpoint**   | **Description**                |
+| ---------- | -------------- | ------------------------------ |
+| `GET`      | `/courses`     | Retrieve a list of all courses |
+| `GET`      | `/courses/:id` | Retrieve a single course by ID |
+| `POST`     | `/courses`     | Create a new course record     |
+| `PUT`      | `/courses/:id` | Update a course record         |
+| `DELETE`   | `/courses/:id` | Delete a course record         |
 
 ### 📌 **Instructor Endpoints**
 
-| **Method** | **Endpoint**          | **Description**                        |
-|------------|-----------------------|----------------------------------------|
-| `GET`     | `/instructors`         | Retrieve a list of all instructors     |
-| `GET`     | `/instructors/:id`     | Retrieve a single instructor by ID     |
-| `POST`    | `/instructors`         | Create a new instructor record         |
-| `PUT`     | `/instructors/:id`     | Update an instructor record            |
-| `DELETE`  | `/instructors/:id`     | Delete an instructor record            |
+| **Method** | **Endpoint**       | **Description**                    |
+| ---------- | ------------------ | ---------------------------------- |
+| `GET`      | `/instructors`     | Retrieve a list of all instructors |
+| `GET`      | `/instructors/:id` | Retrieve a single instructor by ID |
+| `POST`     | `/instructors`     | Create a new instructor record     |
+| `PUT`      | `/instructors/:id` | Update an instructor record        |
+| `DELETE`   | `/instructors/:id` | Delete an instructor record        |
+
+### 📌 **Enrolment Endpoints**
+
+| **Method** | **Endpoint**       | **Description**                    |
+| ---------- | ------------------ | ---------------------------------- |
+| `GET`      | `/enrollments/course/{courseCode}`     | Retrieve all students enrolled in a course |
+| `GET`      | `/enrollments/student/{studentId}` | Retrieve all courses for a student |
+| `POST`     | `/enrollments`     | Enroll student in a course          |
+| `DELETE`   | `/enrollments/:id` | Delete an enrollments record        |
 
 ---
 
@@ -81,13 +89,9 @@ To install the system, follow these steps:
 
 1. **Clone the repository**:
 
+2. **Update your environment variables in the env_example.env file**:
 
-2. **Install dependencies**:
-
-   ```bash
-   npm install
-   ```
-3. **Update your environment variables in the env_example.env file**:
+3. **Install dependencies**:
 
    ```bash
    npm install
@@ -105,11 +109,10 @@ To install the system, follow these steps:
 
 To use the system:
 
-1. Open a web browser and navigate to:
+1. Open a web browser and navigate to the link below for a swagger documentation of the project:
 
    ```
-   http://localhost:8000
+   http://localhost:8000/api-docs/
    ```
 
 2. Use the API endpoints to manage student, course, and instructor data.
-
