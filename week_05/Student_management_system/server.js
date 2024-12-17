@@ -37,7 +37,7 @@ mongoose
   .connect(process.env.LOCAL_DB)
   .then(() => {
     console.log("Database connected");
-    logger.log("info", "Database connected sussessfully");
+    // logger.log("info", "Database connected sussessfully");
     app.listen(process.env.PORT ?? 3000, () => {
       console.log(`server started on port ${process.env.PORT}`);
     });
