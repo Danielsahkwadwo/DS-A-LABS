@@ -37,6 +37,7 @@ The system uses the following models to manage data:
 1. **Student**: Represents a student, with attributes for personal details, contact information, and academic history.
 2. **Course**: Represents a course, with attributes for course code, name, description, credits, and duration.
 3. **Instructor**: Represents an instructor, with attributes for personal details, contact information, and course assignments.
+3. **Enrollment**: Represents an enrollment, with attributes for creating an enrollment as an instructor and also enroling in a course as a student.
 
 ---
 
@@ -47,6 +48,7 @@ The system uses the following models to manage data:
 | **Method** | **Endpoint**    | **Description**                 |
 | ---------- | --------------- | ------------------------------- |
 | `GET`      | `/students`     | Retrieve a list of all students |
+| `GET`      | `/students/sort/students`     | Apply various sorts on student data |
 | `GET`      | `/students/:id` | Retrieve a single student by ID |
 | `POST`     | `/students`     | Create a new student record     |
 | `PUT`      | `/students/:id` | Update a student record         |
@@ -57,6 +59,7 @@ The system uses the following models to manage data:
 | **Method** | **Endpoint**   | **Description**                |
 | ---------- | -------------- | ------------------------------ |
 | `GET`      | `/courses`     | Retrieve a list of all courses |
+| `GET`      | `/courses/sort/courses`     | Apply sorting algorithms to course listings |
 | `GET`      | `/courses/:id` | Retrieve a single course by ID |
 | `POST`     | `/courses`     | Create a new course record     |
 | `PUT`      | `/courses/:id` | Update a course record         |
