@@ -5,15 +5,12 @@ exports.protect = async (req, res, next) => {
     let token = req.session.jwt;
     if (!token) {
       res.redirect("/login");
-      // throw new Error("authorization denied");
     }
     const decoded = JWT.verify(token, process.env.JWT_SECRET);
-    console.log(decoded);
 
     const currentUser = await User.findById(decoded.id).select("-password");
     if (!currentUser) {
       res.redirect("/login");
-      // throw new Error("token is invalid or expired");
     }
     req.user = currentUser;
     res.locals.user = currentUser;

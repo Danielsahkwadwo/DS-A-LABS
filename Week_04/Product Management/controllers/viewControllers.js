@@ -64,7 +64,7 @@ exports.renderAddCategory = (req, res) => {
 
 exports.renderAllProducts = async (req, res) => {
   const products = await getProducts();
-  console.log(products);
+  // console.log(products);
   res.status(200).render("allProducts", { products });
 };
 
