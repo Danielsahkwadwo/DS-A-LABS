@@ -81,17 +81,19 @@ To install the system, follow these steps:
 
 1. **Clone the repository**:
 
-   ```bash
-   git clone https://github.com/your-username/student-management-system.git
-   ```
 
 2. **Install dependencies**:
 
    ```bash
    npm install
    ```
+3. **Update your environment variables in the env_example.env file**:
 
-3. **Start the server**:
+   ```bash
+   npm install
+   ```
+
+4. **Start the server**:
 
    ```bash
    npm start
