@@ -1,7 +1,15 @@
 const { default: mongoose } = require("mongoose");
 const AppError = require("../Utils/AppError");
+const logger = require("../Utils/logger");
 
 const globalErrorHandler = (err, req, res, next) => {
+  logger.log("error", {
+    message: err.message,
+    method: req.method,
+    url: req.url,
+    // stack: err.stack,
+  });
+
   // console.log(err.stack);
   if (err instanceof AppError) {
     return res.status(err.statusCode).json({

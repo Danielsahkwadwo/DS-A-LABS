@@ -1,6 +1,7 @@
 const Course = require("../Models/courses");
 const Instructor = require("../Models/Instructor");
 const AppError = require("../Utils/AppError");
+const mergeSort = require("../Utils/mergeSort");
 const APIFeatures = require("./../Utils/apiFeatures");
 
 exports.createCourse = async (req, res, next) => {
@@ -159,19 +160,28 @@ exports.deleteCourse = async (req, res, next) => {
 
 exports.sortCourses = async (req, res, next) => {
   try {
-    const queries = req.query.sort;
-    const features = new APIFeatures(Course.find(), req.query).sort();
-    const courses = await features.query;
+    let { sort } = req.query;
+    if (!sort) return next(new AppError("Please provide a sort criteria", 400));
+
+    let order = "asc";
+    // Check if sort starts with "-" for descending order
+    if (sort.startsWith("-")) {
+      order = "desc";
+      sort = sort.slice(1);
+    }
+    // Get all courses from database
+    const courses = await Course.find();
     if (!courses) {
       return next(new AppError("an error occurred while getting courses", 400));
     }
+    //apply merge sort
+    const sortedCourses = mergeSort(courses, sort, order);
+
     res.status(200).json({
       status: "success",
-      fields: queries,
-      results: courses.length,
-      data: {
-        courses,
-      },
+      fields: sort,
+      order,
+      data: [...sortedCourses],
     });
   } catch (error) {
     next(error);

@@ -3,6 +3,7 @@ const dotenv = require("dotenv");
 dotenv.config({ path: ".env" });
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
+const mongoSanitize = require("express-mongo-sanitize");
 const swaggerUI = require("swagger-ui-express");
 const Specs = require("./swagger");
 const logger = require("./Utils/logger");
@@ -18,6 +19,7 @@ const instructorRoutes = require("./Routes/Instructor");
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(mongoSanitize());
 
 app.get("/", (req, res) => {
   res.send("welcome to the server");

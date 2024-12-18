@@ -1,6 +1,7 @@
 const Student = require("../Models/students");
 const AppError = require("../Utils/AppError");
 const { createJWT } = require("../Utils/createJWT");
+const mergeSort = require("../Utils/mergeSort");
 const APIFeatures = require("./../Utils/apiFeatures");
 
 exports.addStudent = async (req, res, next) => {
@@ -160,22 +161,28 @@ exports.loginStudent = async (req, res, next) => {
 
 exports.sortStudents = async (req, res, next) => {
   try {
-    const queries = req.query.sort;
-    const features = new APIFeatures(
-      Student.find().select("-password"),
-      req.query
-    ).sort();
-    const students = await features.query;
+    let { sort } = req.query;
+    if (!sort) return next(new AppError("Please provide a sort criteria", 400));
+
+    let order = "asc";
+    // Check if sort starts with "-" for descending order
+    if (sort.startsWith("-")) {
+      order = "desc";
+      sort = sort.slice(1);
+    }
+    //get all students from database
+    const students = await Student.find().select("-password");
+
+    //apply merge sort
+    const sortedStudents = mergeSort(students, sort, order);
     if (!students) {
       return next(new AppError("No students found", 404));
     }
     res.status(200).json({
       status: "success",
-      fields: queries,
-      results: students.length,
-      data: {
-        students,
-      },
+      fields: sort,
+      order,
+      data: [...sortedStudents],
     });
   } catch (err) {
     next(err);
