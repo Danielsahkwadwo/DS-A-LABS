@@ -7,10 +7,13 @@ const studentSchema = new mongoose.Schema(
     firstName: {
       type: String,
       required: [true, "first name is required"],
+      trim: true,
     },
     lastName: {
       type: String,
       required: [true, "last name is required"],
+      trim: true,
+      index: true,
     },
     dateOfBirth: {
       type: Date,
@@ -29,6 +32,7 @@ const studentSchema = new mongoose.Schema(
     department: {
       type: String,
       required: [true, "department is required"],
+      index: true,
     },
     studentId: {
       type: String,
@@ -60,6 +64,9 @@ const studentSchema = new mongoose.Schema(
     resetToken: {
       type: String,
     },
+    resetTokenExpiration: {
+      type: Date,
+    },
   },
   { timestamps: true }
 );
@@ -78,5 +85,6 @@ studentSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 const Student = mongoose.model("student", studentSchema);
+Student.createIndexes();
 
 module.exports = Student;

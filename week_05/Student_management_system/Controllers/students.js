@@ -1,6 +1,7 @@
 const Student = require("../Models/students");
 const AppError = require("../Utils/AppError");
 const { createJWT } = require("../Utils/createJWT");
+const { createToken, hashToken } = require("../Utils/createToken");
 const mergeSort = require("../Utils/mergeSort");
 const APIFeatures = require("./../Utils/apiFeatures");
 
@@ -183,6 +184,67 @@ exports.sortStudents = async (req, res, next) => {
       fields: sort,
       order,
       data: [...sortedStudents],
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.forgotPassword = async (req, res, next) => {
+  try {
+    const { email } = req.body;
+    if (!email) {
+      return next(new AppError("Email is required", 400));
+    }
+    const student = await Student.findOne({ email });
+    if (!student) {
+      return next(new AppError("No student found", 404));
+    }
+    const resetToken = createToken();
+    const hashedToken = hashToken(resetToken);
+
+    student.resetToken = hashedToken;
+    student.resetTokenExpires = Date.now() + 60 * 60 * 1000; // token expires in 1 hour
+    await student.save();
+
+    res.status(200).json({
+      status: "success",
+      token: resetToken,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.passwordReset = async (req, res, next) => {
+  try {
+    const { email, token } = req.params;
+    const { newPassword, confirmPassword } = req.body;
+    if (!newPassword || !confirmPassword) {
+      return next(new AppError("Password is required", 400));
+    }
+    if (newPassword !== confirmPassword) {
+      return next(new AppError("Passwords do not match", 400));
+    }
+    const student = await Student.findOne({ email });
+    if (!student) {
+      return next(new AppError("No student found", 404));
+    }
+    const hashedToken = hashToken(token);
+    if (
+      student.resetToken !== hashedToken ||
+      student.resetTokenExpires < Date.now()
+    ) {
+      return next(new AppError("Invalid token or token has expired", 400));
+    }
+    student.password = newPassword;
+    student.resetToken = null;
+    student.resetTokenExpiration = null;
+
+    await student.save();
+    res.status(200).json({
+      status: "success",
+      message: "Password reset successfully",
     });
   } catch (err) {
     next(err);

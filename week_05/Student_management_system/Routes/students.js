@@ -7,6 +7,8 @@ const {
   deleteStudent,
   loginStudent,
   sortStudents,
+  forgotPassword,
+  passwordReset,
 } = require("../Controllers/students");
 const { protected, isInstructor } = require("../Middlewares/authMiddleware");
 const router = express.Router();
@@ -190,5 +192,8 @@ router.post("/auth/login", loginStudent);
  *         description: Internal server error
  */
 router.get("/sort/students", protected, isInstructor, sortStudents);
+
+router.post("/auth/forgot-password", forgotPassword);
+router.post("/auth/password-reset/:email/:token", passwordReset);
 
 module.exports = router;
