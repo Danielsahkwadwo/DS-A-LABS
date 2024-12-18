@@ -4,6 +4,27 @@ const Instructor = require("./../Models/Instructor");
 
 exports.addInstructor = async (req, res, next) => {
   try {
+    const {
+      firstName,
+      lastName,
+      email,
+      dateOfBirth,
+      phoneNumber,
+      department,
+      password,
+    } = req.body;
+
+    if (
+      !firstName ||
+      !lastName ||
+      !email ||
+      !dateOfBirth ||
+      !phoneNumber ||
+      !department ||
+      !password
+    ) {
+      return next(new AppError("please fill all required fields", 400));
+    }
     const newInstructor = await Instructor.create(req.body);
     if (!newInstructor) {
       return next(

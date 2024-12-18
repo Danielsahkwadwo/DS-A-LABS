@@ -1,5 +1,4 @@
 const Course = require("../Models/courses");
-const Instructor = require("../Models/Instructor");
 const AppError = require("../Utils/AppError");
 const mergeSort = require("../Utils/mergeSort");
 const APIFeatures = require("./../Utils/apiFeatures");
@@ -35,10 +34,13 @@ exports.createCourse = async (req, res, next) => {
     if (!course) {
       return next(new AppError("an error occurred while creating course", 400));
     }
-    const currentInstructor = await Instructor.findById(req.user.id);
-    currentInstructor.coursesTaught.push(course._id);
+    const instructorCourses = await course.populate({
+      path: "instructorId",
+      select: "coursesTaught",
+    });
+    instructorCourses.instructorId.coursesTaught.push(course._id);
 
-    await currentInstructor.save();
+    await instructorCourses.instructorId.save();
     res.status(201).json({
       status: "success",
       data: {
@@ -59,7 +61,6 @@ exports.getCourses = async (req, res, next) => {
       .filter()
       .paginate();
     const courses = await features.query;
-    const documentCount = await Course.countDocuments();
     if (!courses) {
       return next(new AppError("an error occurred while getting courses", 400));
     }
@@ -120,7 +121,6 @@ exports.updateCourse = async (req, res, next) => {
 exports.deleteCourse = async (req, res, next) => {
   try {
     const { courseCode } = req.params;
-
     //check if course is available
     const courseToDelete = await Course.findOne({
       courseCode: courseCode.toUpperCase(),
@@ -135,6 +135,13 @@ exports.deleteCourse = async (req, res, next) => {
         new AppError("You are not authorized to delete this course", 401)
       );
     }
+    //delete course from instructor
+    const instructor = await courseToDelete.populate({
+      path: "instructorId",
+      select: "coursesTaught",
+    });
+    instructor.instructorId.coursesTaught.pop(courseToDelete._id);
+    await instructor.instructorId.save();
 
     //delete course if user is authorized
     const course = await Course.deleteOne({
@@ -143,11 +150,6 @@ exports.deleteCourse = async (req, res, next) => {
     if (!course) {
       return next(new AppError("course with this courseCode not found", 404));
     }
-
-    //delete course from instructor
-    const instructor = await Instructor.findById(req.user.id);
-    instructor.coursesTaught.pop(courseToDelete._id);
-    await instructor.save();
 
     res.status(200).json({
       status: "success",

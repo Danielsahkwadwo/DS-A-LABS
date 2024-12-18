@@ -98,6 +98,21 @@ exports.updateStudent = async (req, res, next) => {
   try {
     let id;
     req.user.role === "student" ? (id = req.user.id) : req.params.id;
+    //excluding fields for students
+    if (req.user.role === "student") {
+      let excludedFields = [
+        "password",
+        "email",
+        "studentId",
+        "gpa",
+        "department",
+        "role",
+      ];
+
+      Object.keys(req.body).forEach((val) => {
+        if (excludedFields.includes(val)) delete req.body[val];
+      });
+    }
     const student = await Student.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,

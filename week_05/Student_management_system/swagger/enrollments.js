@@ -4,7 +4,6 @@ const enrolmentSchema = {
     properties: {
       studentId: {
         type: "string",
-        format: "ObjectId",
       },
       courseId: {
         type: "string",
@@ -17,22 +16,12 @@ const enrolmentSchema = {
         type: "string",
         format: "date",
       },
-      grade: {
-        type: "string",
-      },
-      status: {
-        type: "string",
-        enum: ["pending", "approved", "rejected"],
-        default: "pending",
-      },
     },
     example: {
-      studentId: "64d8f8a9f8f8f8f8f8f8f8f",
+      studentId: "UEB3512022",
       courseId: "64d8f8a9f8f8f8f8f8f8f8f",
       courseCode: "courseCode",
       enrolmentDate: "2022-01-01",
-      grade: "A",
-      status: "pending",
     },
   },
 };
