@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const AppError = require("../Utils/AppError");
-const logger = require("../Utils/logger");
+const logger = require("./../config/logger");
 
 const globalErrorHandler = (err, req, res, next) => {
   logger.log("error", {
