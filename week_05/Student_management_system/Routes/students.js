@@ -9,6 +9,8 @@ const {
   sortStudents,
   forgotPassword,
   passwordReset,
+  getSelf,
+  updateSelf,
 } = require("../Controllers/students");
 const { protected, isInstructor } = require("../Middlewares/authMiddleware");
 const router = express.Router();
@@ -93,8 +95,27 @@ router.get("/", protected, isInstructor, getStudents);
  *       404:
  *         description: Student not found
  */
-router.get("/:id", protected, getStudent);
+router.get("/get-student/:id", protected, isInstructor, getStudent);
 
+/**
+ * @swagger
+ * /api/v1/students/get-self:
+ *   get:
+ *     summary: Get the current student
+ *     tags: [Students]
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the current student
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Student'
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Student not found
+ */
+router.get("/get-self", protected, getSelf);
 /**
  * @swagger
  * /api/v1/students/{id}:
@@ -124,8 +145,33 @@ router.get("/:id", protected, getStudent);
  *       404:
  *         description: Student not found
  */
-router.put("/:id", protected, updateStudent);
+router.put("/update/:id", protected, isInstructor, updateStudent);
 
+/**
+ * @swagger
+ * /api/v1/students/update-self:
+ *   put:
+ *     summary: Update the current student
+ *     tags: [Students]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/Student'
+ *     responses:
+ *       200:
+ *         description: Successfully updated the current student
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/Student'
+ *       404:
+ *         description: Student not found
+ *       401:
+ *         description: Unauthorized
+ */
+router.put("/update-self", protected, updateSelf);
 /**
  * @swagger
  * /api/v1/students/{id}:
@@ -193,7 +239,50 @@ router.post("/auth/login", loginStudent);
  */
 router.get("/sort/students", protected, isInstructor, sortStudents);
 
+/**
+ * @swagger
+ * /api/v1/students/auth/forgot-password:
+ *   post:
+ *     summary: Forgot password
+ *     tags: [Students]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/ForgotPassword'
+ *     responses:
+ *       200:
+ *         description: Successfully sent the password reset link
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/ForgotPassword'
+ *       404:
+ *         description: Student not found
+ */
 router.post("/auth/forgot-password", forgotPassword);
+
+/**
+ * @swagger
+ * /api/v1/students/auth/password-reset/{email}/{token}:
+ *   get:
+ *     summary: Password reset
+ *     tags: [Students]
+ *     responses:
+ *       200:
+ *         description: Successfully reset the password
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/PasswordReset'
+ *       404:
+ *         description: Student not found
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Internal server error
+ */
 router.post("/auth/password-reset/:email/:token", passwordReset);
 
 module.exports = router;

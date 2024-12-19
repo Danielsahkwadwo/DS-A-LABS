@@ -6,6 +6,7 @@ const {
   deleteEnrollmentByStudent,
   getEnrollments,
   deleteEnrollmentByInstructor,
+  getStudentEnrolledInCourse,
 } = require("../Controllers/enrolment");
 const { protected, isInstructor } = require("../Middlewares/authMiddleware");
 const router = express.Router();
@@ -17,7 +18,7 @@ const router = express.Router();
  *   description: API for managing enrolments between students and courses
  */
 
-/** 
+/**
  * @swagger
  * /api/v1/enrolments:
  *   get:
@@ -38,8 +39,8 @@ const router = express.Router();
  *         description: Bad request
  *       500:
  *         description: Internal server error
-*/
-router.get("/", protected,isInstructor,getEnrollments)
+ */
+router.get("/", protected, isInstructor, getEnrollments);
 /**
  * @swagger
  * /api/v1/enrolments:
@@ -96,10 +97,9 @@ router.post("/", protected, isInstructor, createEnrollment);
  */
 router.post("/enroll-self", protected, selfEnrollment);
 
-
 /**
  * @swagger
- * /api/v1/enrolments/{studentId}:
+ * /api/v1/enrolments/student/{studentId}:
  *   get:
  *     summary: Get all enrolments for a student
  *     tags: [Enrolments]
@@ -128,7 +128,41 @@ router.post("/enroll-self", protected, selfEnrollment);
  */
 router.get("/student/:studentId", protected, getStudentEnrollments);
 
-router.get("/course/:courseCode");
+/**
+ * @swagger
+ * /api/v1/enrolments/course/{courseCode}:
+ *   get:
+ *     summary: Get all enrolments for a course (permitted by instructor)
+ *     tags: [Enrolments]
+ *     parameters:
+ *       - in: path
+ *         name: courseCode
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The code of the course
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved all enrolments for the course
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Enrolment'
+ *       401:
+ *         description: Unauthorized
+ *       400:
+ *         description: Bad request
+ *       500:
+ *         description: Internal server error
+ */
+router.get(
+  "/course/:courseCode",
+  protected,
+  isInstructor,
+  getStudentEnrolledInCourse
+);
 
 /**
  * @swagger
@@ -154,7 +188,6 @@ router.get("/course/:courseCode");
  *         description: Internal server error
  */
 router.delete("/delete/:enrollmentId", protected, deleteEnrollmentByStudent);
-
 
 /**
  * @swagger

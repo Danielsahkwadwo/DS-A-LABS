@@ -86,6 +86,44 @@ const studentSchema = {
       password: "password123",
     },
   },
+  ForgotPassword: {
+    type: "object",
+    required: ["email"],
+    properties: {
+      email: {
+        type: "string",
+        format: "email",
+        description: "The email of the student",
+      },
+    },
+    example: {
+      email: "johndoe@example.com",
+    },
+  },
+  ResetPassword: {
+    type: "object",
+    required: ["email", "token", "password"],
+    properties: {
+      email: {
+        type: "string",
+        format: "email",
+        description: "The email of the student",
+      },
+      token: {
+        type: "string",
+        description: "The token of the student",
+      },
+      password: {
+        type: "string",
+        description: "The password of the student",
+      },
+    },
+    example: {
+      email: "johndoe@example.com",
+      token: "token123",
+      password: "password123",
+    },
+  },
 };
 
 module.exports = studentSchema;

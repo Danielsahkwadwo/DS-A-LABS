@@ -131,7 +131,7 @@ exports.loginInstructor = async (req, res, next) => {
       return next(new AppError("Incorrect email or password", 401));
     }
 
-    const token = createJWT(instructor._id, instructor.role);
+    const token = createJWT(instructor._id, instructor.role, null);
     res.status(200).json({
       status: "success",
       data: {

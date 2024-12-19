@@ -77,8 +77,7 @@ exports.getStudents = async (req, res, next) => {
 
 exports.getStudent = async (req, res, next) => {
   try {
-    let id;
-    req.user.role === "student" ? (id = req.user.id) : req.params.id;
+    let id = req.params.id;
     const student = await Student.findById(id).select("-password");
     if (!student) {
       return next(new AppError("No student found", 404));
@@ -94,29 +93,68 @@ exports.getStudent = async (req, res, next) => {
   }
 };
 
+exports.getSelf = async (req, res, next) => {
+  try {
+    const student = await Student.findOne({
+      studentId: req.user.studentId,
+    }).select("-password");
+    if (!student) {
+      return next(new AppError("No student found", 404));
+    }
+    res.status(200).json({
+      status: "success",
+      data: {
+        student,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 exports.updateStudent = async (req, res, next) => {
   try {
-    let id;
-    req.user.role === "student" ? (id = req.user.id) : req.params.id;
-    //excluding fields for students
-    if (req.user.role === "student") {
-      let excludedFields = [
-        "password",
-        "email",
-        "studentId",
-        "gpa",
-        "department",
-        "role",
-      ];
-
-      Object.keys(req.body).forEach((val) => {
-        if (excludedFields.includes(val)) delete req.body[val];
-      });
-    }
+    let id = req.params.id;
     const student = await Student.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     });
+    if (!student) {
+      return next(new AppError("No student found", 404));
+    }
+    res.status(200).json({
+      status: "success",
+      data: {
+        student,
+      },
+    });
+  } catch (err) {
+    next(err);
+  }
+};
+
+exports.updateSelf = async (req, res, next) => {
+  try {
+    //excluding fields for students
+    let excludedFields = [
+      "password",
+      "email",
+      "studentId",
+      "gpa",
+      "department",
+      "role",
+    ];
+
+    Object.keys(req.body).forEach((val) => {
+      if (excludedFields.includes(val)) delete req.body[val];
+    });
+    const student = await Student.findOneAndUpdate(
+      { studentId: req.user.studentId },
+      req.body,
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
     if (!student) {
       return next(new AppError("No student found", 404));
     }
@@ -162,7 +200,7 @@ exports.loginStudent = async (req, res, next) => {
     }
 
     //create JWT if password is correct
-    const token = createJWT(student._id, student.role);
+    const token = createJWT(student._id, student.role, student.studentId);
     res.status(200).json({
       status: "success",
       data: {

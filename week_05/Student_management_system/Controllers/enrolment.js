@@ -121,18 +121,43 @@ exports.getStudentEnrollments = async (req, res, next) => {
   try {
     let studentId;
     req.user.role === "student"
-      ? (studentId = req.user.id)
-      : req.params.studentId;
-    const enrollments = await Enrollment.find({ studentId: studentId });
-    if (!enrollments) {
-      return next(
-        new AppError("an error occurred while getting enrollments", 400)
-      );
+      ? (studentId = req.user.studentId)
+      : (studentId = req.params.studentId);
+    const courses = await Enrollment.aggregate([
+      {
+        $match: {
+          studentId: studentId.toString(),
+        },
+      },
+      {
+        $lookup: {
+          from: "courses",
+          localField: "courseCode",
+          foreignField: "courseCode",
+          as: "course",
+        },
+      },
+      {
+        $unwind: "$course",
+      },
+      {
+        $project: {
+          _id: 1,
+          courseCode: 1,
+          courseName: "$course.courseName",
+          courseDescription: "$course.courseDescription",
+          courseDuration: "$course.courseDuration",
+          credits: "$course.credits",
+        },
+      },
+    ]);
+    if (!courses) {
+      return next(new AppError("an error occurred while getting courses", 400));
     }
     res.status(200).json({
       status: "success",
       data: {
-        enrollments,
+        courses,
       },
     });
   } catch (error) {
@@ -140,6 +165,55 @@ exports.getStudentEnrollments = async (req, res, next) => {
   }
 };
 
+exports.getStudentEnrolledInCourse = async (req, res, next) => {
+  try {
+    const { courseCode } = req.params;
+    const students = await Enrollment.aggregate([
+      {
+        $match: {
+          courseCode: courseCode.toUpperCase(),
+        },
+      },
+      {
+        $lookup: {
+          from: "students",
+          localField: "studentId",
+          foreignField: "studentId",
+          as: "student",
+        },
+      },
+      {
+        $unwind: "$student",
+      },
+      {
+        $project: {
+          _id: 1,
+          studentId: 1,
+          firstName: "$student.firstName",
+          lastName: "$student.lastName",
+          email: "$student.email",
+          dateOfBirth: "$student.dateOfBirth",
+          phoneNumber: "$student.phoneNumber",
+          department: "$student.department",
+          gender: "$student.gender",
+        },
+      },
+    ]);
+    if (!students) {
+      return next(
+        new AppError("an error occurred while getting students", 400)
+      );
+    }
+    res.status(200).json({
+      status: "success",
+      data: {
+        students,
+      },
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 exports.deleteEnrollmentByStudent = async (req, res, next) => {
   try {
     const { enrollmentId } = req.params;
