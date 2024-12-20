@@ -151,10 +151,22 @@ router.delete("/:courseCode", isInstructor, deleteCourse);
 
 /**
  * @swagger
- * /api/v1/courses/sort:
+ * /api/v1/courses/sort/courses?sortBy=courseCode&order=asc:
  *   get:
  *     summary: Sort courses by a provided criteria
  *     tags: [Courses]
+ *     parameters:
+ *       - in: query
+ *         name: criteria
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The criteria to sort by
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *         description: The order to sort in
  *     responses:
  *       200:
  *         description: Successfully retrieved all courses sorted by courseCode

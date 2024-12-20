@@ -5,25 +5,9 @@ const APIFeatures = require("./../Utils/apiFeatures");
 
 exports.createCourse = async (req, res, next) => {
   try {
-    const {
-      courseName,
-      courseCode,
-      courseDescription,
-      credits,
-      courseDuration,
-      department,
-      semester,
-    } = req.body;
+    const { courseName, courseCode, courseDescription, credits, courseDuration, department, semester } = req.body;
 
-    if (
-      !courseName ||
-      !courseCode ||
-      !courseDescription ||
-      !credits ||
-      !courseDuration ||
-      !department ||
-      !semester
-    ) {
+    if (!courseName || !courseCode || !courseDescription || !credits || !courseDuration || !department || !semester) {
       return next(new AppError("Please provide all required fields", 400));
     }
     const course = await Course.create({
@@ -57,9 +41,7 @@ exports.createCourse = async (req, res, next) => {
 
 exports.getCourses = async (req, res, next) => {
   try {
-    const features = new APIFeatures(Course.find(), req.query)
-      .filter()
-      .paginate();
+    const features = new APIFeatures(Course.find(), req.query).filter().paginate();
     const courses = await features.query;
     if (!courses) {
       return next(new AppError("an error occurred while getting courses", 400));
@@ -99,11 +81,10 @@ exports.getCourseDetails = async (req, res, next) => {
 exports.updateCourse = async (req, res, next) => {
   try {
     const { courseCode } = req.params;
-    const course = await Course.findOneAndUpdate(
-      { courseCode: courseCode.toUpperCase() },
-      req.body,
-      { new: true, runValidators: true }
-    );
+    const course = await Course.findOneAndUpdate({ courseCode: courseCode.toUpperCase() }, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (!course) {
       return next(new AppError("course with this courseCode not found", 404));
     }
@@ -131,9 +112,7 @@ exports.deleteCourse = async (req, res, next) => {
 
     //check if user is authorized to delete this course
     if (courseToDelete.instructorId.toString() !== req.user.id) {
-      return next(
-        new AppError("You are not authorized to delete this course", 401)
-      );
+      return next(new AppError("You are not authorized to delete this course", 401));
     }
     //delete course from instructor
     const instructor = await courseToDelete.populate({
@@ -162,14 +141,16 @@ exports.deleteCourse = async (req, res, next) => {
 
 exports.sortCourses = async (req, res, next) => {
   try {
-    let { sort } = req.query;
-    if (!sort) return next(new AppError("Please provide a sort criteria", 400));
+    let { sortBy } = req.query;
+    let { order } = req.query;
+    if (!sortBy) return next(new AppError("Please provide a sort criteria", 400));
+    if (order && order !== "asc" && order !== "desc")
+      return next(new AppError("Please provide a valid order. either asc or desc", 400));
 
-    let order = "asc";
     // Check if sort starts with "-" for descending order
-    if (sort.startsWith("-")) {
+    if (sortBy.startsWith("-")) {
       order = "desc";
-      sort = sort.slice(1);
+      sortBy = sortBy.slice(1);
     }
     // Get all courses from database
     const courses = await Course.find();
@@ -177,12 +158,12 @@ exports.sortCourses = async (req, res, next) => {
       return next(new AppError("an error occurred while getting courses", 400));
     }
     //apply merge sort
-    const sortedCourses = mergeSort(courses, sort, order);
+    const sortedCourses = mergeSort(courses, sortBy, order);
 
     res.status(200).json({
       status: "success",
-      fields: sort,
-      order,
+      fields: sortBy,
+      order: order ?? "asc",
       data: [...sortedCourses],
     });
   } catch (error) {

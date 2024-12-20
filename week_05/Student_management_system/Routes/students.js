@@ -219,10 +219,22 @@ router.post("/auth/login", loginStudent);
 
 /**
  * @swagger
- * /api/v1/students/sort/students?sortBy=name:asc:
+ * /api/v1/students/sort/students?sortBy=name&order=asc:
  *   get:
  *     summary: Sort students by a provided criteria
  *     tags: [Students]
+ *     parameters:
+ *       - in: query
+ *         name: sortBy
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The criteria to sort students by
+ *       - in: query
+ *         name: order
+ *         schema:
+ *           type: string
+ *         description: The order to sort students in
  *     responses:
  *       200:
  *         description: Successfully retrieved all students sorted by name

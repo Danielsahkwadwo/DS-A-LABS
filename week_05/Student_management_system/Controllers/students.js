@@ -7,24 +7,8 @@ const APIFeatures = require("./../Utils/apiFeatures");
 
 exports.addStudent = async (req, res, next) => {
   try {
-    const {
-      firstName,
-      lastName,
-      dateOfBirth,
-      email,
-      phoneNumber,
-      gender,
-      studentId,
-    } = req.body;
-    if (
-      !firstName ||
-      !lastName ||
-      !dateOfBirth ||
-      !email ||
-      !phoneNumber ||
-      !gender ||
-      !studentId
-    ) {
+    const { firstName, lastName, dateOfBirth, email, phoneNumber, gender, studentId } = req.body;
+    if (!firstName || !lastName || !dateOfBirth || !email || !phoneNumber || !gender || !studentId) {
       next(new AppError("All fields are required", 400));
     }
     const student = await Student.create({
@@ -52,12 +36,7 @@ exports.addStudent = async (req, res, next) => {
 exports.getStudents = async (req, res, next) => {
   try {
     //creating an instance of the APIFeatures class
-    const features = new APIFeatures(
-      Student.find().select("-password"),
-      req.query
-    )
-      .filter()
-      .paginate();
+    const features = new APIFeatures(Student.find().select("-password"), req.query).filter().paginate();
 
     const students = await features.query;
     if (!students) {
@@ -135,26 +114,15 @@ exports.updateStudent = async (req, res, next) => {
 exports.updateSelf = async (req, res, next) => {
   try {
     //excluding fields for students
-    let excludedFields = [
-      "password",
-      "email",
-      "studentId",
-      "gpa",
-      "department",
-      "role",
-    ];
+    let excludedFields = ["password", "email", "studentId", "gpa", "department", "role"];
 
     Object.keys(req.body).forEach((val) => {
       if (excludedFields.includes(val)) delete req.body[val];
     });
-    const student = await Student.findOneAndUpdate(
-      { studentId: req.user.studentId },
-      req.body,
-      {
-        new: true,
-        runValidators: true,
-      }
-    );
+    const student = await Student.findOneAndUpdate({ studentId: req.user.studentId }, req.body, {
+      new: true,
+      runValidators: true,
+    });
     if (!student) {
       return next(new AppError("No student found", 404));
     }
@@ -215,27 +183,29 @@ exports.loginStudent = async (req, res, next) => {
 
 exports.sortStudents = async (req, res, next) => {
   try {
-    let { sort } = req.query;
-    if (!sort) return next(new AppError("Please provide a sort criteria", 400));
+    let { sortBy } = req.query;
+    let { order } = req.query;
+    if (!sortBy) return next(new AppError("Please provide a sort criteria", 400));
+    if (order && order !== "asc" && order !== "desc")
+      return next(new AppError("Please provide a valid order. either asc or desc", 400));
 
-    let order = "asc";
     // Check if sort starts with "-" for descending order
-    if (sort.startsWith("-")) {
+    if (sortBy.startsWith("-")) {
       order = "desc";
-      sort = sort.slice(1);
+      sortBy = sortBy.slice(1);
     }
     //get all students from database
     const students = await Student.find().select("-password");
 
     //apply merge sort
-    const sortedStudents = mergeSort(students, sort, order);
+    const sortedStudents = mergeSort(students, sortBy, order);
     if (!students) {
       return next(new AppError("No students found", 404));
     }
     res.status(200).json({
       status: "success",
-      fields: sort,
-      order,
+      fields: sortBy,
+      order: order ?? "asc",
       data: [...sortedStudents],
     });
   } catch (err) {
@@ -284,10 +254,7 @@ exports.passwordReset = async (req, res, next) => {
       return next(new AppError("No student found", 404));
     }
     const hashedToken = hashToken(token);
-    if (
-      student.resetToken !== hashedToken ||
-      student.resetTokenExpires < Date.now()
-    ) {
+    if (student.resetToken !== hashedToken || student.resetTokenExpires < Date.now()) {
       return next(new AppError("Invalid token or token has expired", 400));
     }
     student.password = newPassword;
