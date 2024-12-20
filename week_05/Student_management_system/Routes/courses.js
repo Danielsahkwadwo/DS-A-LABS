@@ -8,6 +8,7 @@ const {
   sortCourses,
 } = require("../Controllers/courses");
 const { protected, isInstructor } = require("../Middlewares/authMiddleware");
+const cacheMiddleware = require("../Middlewares/cacheMiddleware");
 const router = express.Router();
 
 router.use(protected);
@@ -63,7 +64,7 @@ router.post("/", isInstructor, createCourse);
  *       400:
  *         description: Bad request
  */
-router.get("/", getCourses);
+router.get("/", cacheMiddleware("courses", 1800), getCourses);
 
 /**
  * @swagger
@@ -181,6 +182,6 @@ router.delete("/:courseCode", isInstructor, deleteCourse);
  *       404:
  *         description: Course not found
  */
-router.get("/sort/courses", protected, isInstructor, sortCourses);
+router.get("/sort/courses", protected, isInstructor, cacheMiddleware("courses", 1800), sortCourses);
 
 module.exports = router;

@@ -13,6 +13,7 @@ const {
   updateSelf,
 } = require("../Controllers/students");
 const { protected, isInstructor } = require("../Middlewares/authMiddleware");
+const cacheMiddleware = require("../Middlewares/cacheMiddleware");
 const router = express.Router();
 
 /***
@@ -249,7 +250,7 @@ router.post("/auth/login", loginStudent);
  *       404:
  *         description: Internal server error
  */
-router.get("/sort/students", protected, isInstructor, sortStudents);
+router.get("/sort/students", protected, isInstructor, cacheMiddleware("students", 1800), sortStudents);
 
 /**
  * @swagger

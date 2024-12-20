@@ -8,7 +8,7 @@ const Specs = require("./swagger");
 const logger = require("./config/logger");
 const globalErrorHandler = require("./Middlewares/globalErrorHandler");
 const connectDatabase = require("./config/database");
-const RedisConnect = require("./config/redis");
+const {RedisConnect} = require("./config/redis");
 
 const app = express();
 
