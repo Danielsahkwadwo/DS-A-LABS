@@ -1,8 +1,8 @@
+const mergeSort = require("../helpers/mergeSort");
 const Student = require("../Models/students");
 const AppError = require("../Utils/AppError");
 const { createJWT } = require("../Utils/createJWT");
 const { createToken, hashToken } = require("../Utils/createToken");
-const mergeSort = require("../Utils/mergeSort");
 const APIFeatures = require("./../Utils/apiFeatures");
 
 exports.addStudent = async (req, res, next) => {

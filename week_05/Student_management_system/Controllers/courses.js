@@ -1,6 +1,6 @@
+const mergeSort = require("../helpers/mergeSort");
 const Course = require("../Models/courses");
 const AppError = require("../Utils/AppError");
-const mergeSort = require("../Utils/mergeSort");
 const APIFeatures = require("./../Utils/apiFeatures");
 
 exports.createCourse = async (req, res, next) => {
