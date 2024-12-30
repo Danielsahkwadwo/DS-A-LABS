@@ -28,7 +28,9 @@ describe("student handlers", () => {
   let mockResponse;
   let mockNext;
 
+  // Set up mock objects
   beforeEach(() => {
+    // Mock request, response, and next
     mockRequest = {
       body: {
         firstName: "John",
@@ -67,21 +69,24 @@ describe("student handlers", () => {
       mockRequest.body = {}; // Missing all fields
       await addStudent(mockRequest, mockResponse, mockNext);
 
+      // Expect next to be called with an error
       expect(mockNext).toHaveBeenCalledWith(new AppError("All fields are required", 400));
       expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockResponse.json).not.toHaveBeenCalled();
     });
 
     test("should create a new student and return a 201 status with user data", async () => {
+      //mock student data
       const mockStudent = {
         ...mockRequest.body,
         email: mockRequest.body.email.toLowerCase(),
         studentId: mockRequest.body.studentId.toLowerCase(),
       };
+      //mock create student function
       Student.create.mockResolvedValue(mockStudent);
 
       await addStudent(mockRequest, mockResponse, mockNext);
-
+      // run assertion
       expect(Student.create).toHaveBeenCalledWith(mockRequest.body);
       expect(mockResponse.status).toHaveBeenCalledWith(201);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -94,11 +99,12 @@ describe("student handlers", () => {
     });
 
     test("should handle errors and return a 400 status with error message", async () => {
+      //mock error message
       const mockError = new Error("validation error");
       Student.create.mockRejectedValue(mockError);
 
       await addStudent(mockRequest, mockResponse, mockNext);
-
+      // run assertion
       expect(Student.create).toHaveBeenCalledWith(mockRequest.body);
       expect(mockNext).toHaveBeenCalledWith(new AppError(mockError.message, 400));
       expect(mockResponse.status).not.toHaveBeenCalled();
@@ -106,13 +112,14 @@ describe("student handlers", () => {
     });
 
     it("should call next with an error if email or studentId already exists", async () => {
+      // Mock a duplicate key error
       const duplicateKeyError = new Error("E11000 duplicate key error collection");
       duplicateKeyError.code = 11000;
 
       Student.create.mockRejectedValue(duplicateKeyError);
 
       await addStudent(mockRequest, mockResponse, mockNext);
-
+      //run assertions
       expect(mockNext).toHaveBeenCalledWith(new AppError("Email or student ID already exists", 400));
       expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockResponse.json).not.toHaveBeenCalled();
@@ -124,6 +131,7 @@ describe("student handlers", () => {
    */
   describe("get student handler", () => {
     it("should return student data when a valid ID is provided", async () => {
+      // Mock student data
       const mockStudent = {
         id: "1234567890abcdef12345678",
         firstName: "John",
@@ -134,10 +142,11 @@ describe("student handlers", () => {
       };
       mockRequest.params = { id: "1234567890abcdef12345678" };
       const mockSelect = jest.fn().mockResolvedValue(mockStudent);
+      // Mock the findById method
       Student.findById.mockReturnValue({ select: mockSelect });
 
       await getStudent(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findById).toHaveBeenCalledWith(mockRequest.params.id);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -150,12 +159,13 @@ describe("student handlers", () => {
     });
 
     it("should call next with a 404 error if student is not found", async () => {
+      // Mock no student found
       mockRequest.params = { id: "nonexistentID" };
       const mockSelect = jest.fn().mockResolvedValue(null);
       Student.findById.mockReturnValue({ select: mockSelect });
 
       await getStudent(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findById).toHaveBeenCalledWith("nonexistentID");
       expect(mockNext).toHaveBeenCalledWith(new AppError("No student found", 404));
       expect(mockResponse.status).not.toHaveBeenCalled();
@@ -223,6 +233,7 @@ describe("student handlers", () => {
    */
   describe("get self handler", () => {
     it("should return the student with a 200 status", async () => {
+      // Mock student data
       const mockStudent = {
         _id: "1",
         firstName: "John",
@@ -231,9 +242,10 @@ describe("student handlers", () => {
         email: "john.doe@example.com",
       };
 
+      // Mock the authenticated user
       mockRequest = {
         user: {
-          studentId: "ueb3512920", // Mock studentId from the authenticated user
+          studentId: "ueb3512920",
         },
       };
       // Mock the findOne method to resolve with a student
@@ -242,7 +254,7 @@ describe("student handlers", () => {
       });
 
       await getSelf(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findOne).toHaveBeenCalledWith({ studentId: "ueb3512920" });
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -280,6 +292,7 @@ describe("student handlers", () => {
    */
   describe("update student handler", () => {
     it("should update a student and return a 200 status", async () => {
+      // Mock student data
       const mockStudent = {
         id: "1234567890abcdef12345678",
         firstName: "John",
@@ -288,7 +301,7 @@ describe("student handlers", () => {
         gender: "male",
         department: "Computer Science",
       };
-
+      // Mock request, response, and next
       mockRequest = {
         body: {
           firstName: "Jane",
@@ -305,7 +318,7 @@ describe("student handlers", () => {
       Student.findByIdAndUpdate.mockResolvedValue(mockStudent);
 
       await updateStudent(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findByIdAndUpdate).toHaveBeenCalledWith(
         mockRequest.params.id,
         mockRequest.body,
@@ -322,6 +335,7 @@ describe("student handlers", () => {
     });
 
     it("should call next with a 404 error if no student is found", async () => {
+      // Mock request, response, and next
       mockRequest = {
         params: {
           id: "1234567890abcdef12345678",
@@ -331,7 +345,7 @@ describe("student handlers", () => {
       Student.findByIdAndUpdate.mockResolvedValue(null);
 
       await updateStudent(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findByIdAndUpdate).toHaveBeenCalledWith(
         mockRequest.params.id,
         mockRequest.body,
@@ -348,6 +362,7 @@ describe("student handlers", () => {
    */
   describe("delete student handler", () => {
     it("should delete a student and return a 204 status", async () => {
+      // Mock request
       mockRequest = {
         params: {
           id: "1234567890abcdef12345678",
@@ -357,7 +372,7 @@ describe("student handlers", () => {
       Student.findByIdAndDelete.mockResolvedValue({});
 
       await deleteStudent(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findByIdAndDelete).toHaveBeenCalledWith(mockRequest.params.id);
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -367,6 +382,7 @@ describe("student handlers", () => {
     });
 
     it("should call next with a 404 error if no student is found", async () => {
+      // Mock request
       mockRequest = {
         params: {
           id: "1234567890abcdef12345678",
@@ -376,7 +392,7 @@ describe("student handlers", () => {
       Student.findByIdAndDelete.mockResolvedValue(null);
 
       await deleteStudent(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findByIdAndDelete).toHaveBeenCalledWith(mockRequest.params.id);
       expect(mockNext).toHaveBeenCalledWith(new AppError("No student found", 404));
       expect(mockResponse.status).not.toHaveBeenCalled();
@@ -389,6 +405,7 @@ describe("student handlers", () => {
    */
   describe("login student handler", () => {
     it("should login a student and return a 200 status", async () => {
+      // Mock student data
       const mockStudent = {
         id: "1234567890abcdef12345678",
         firstName: "John",
@@ -399,6 +416,7 @@ describe("student handlers", () => {
         comparePassword: jest.fn(),
       };
 
+      // Mock request
       mockRequest = {
         body: {
           email: "johndoe@example.com",
@@ -413,6 +431,7 @@ describe("student handlers", () => {
       createJWT.mockReturnValue("mockToken123");
       await loginStudent(mockRequest, mockResponse, mockNext);
 
+      //       run assertions
       expect(Student.findOne).toHaveBeenCalledWith({ email: "johndoe@example.com" });
       expect(mockResponse.status).toHaveBeenCalledWith(200);
       expect(mockResponse.json).toHaveBeenCalledWith({
@@ -465,18 +484,20 @@ describe("student handlers", () => {
    */
   describe("sort students handler", () => {
     it("should call next with a 400 error if sortBy is not provided", async () => {
+      // Mock request without sortBy parameter
       await sortStudents(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(mockNext).toHaveBeenCalledWith(new AppError("Please provide a sort criteria", 400));
       expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockResponse.json).not.toHaveBeenCalled();
     });
 
     it("should call next with a 400 error if order is invalid", async () => {
+      // Mock request without sortBy parameter
       mockRequest.query = { sortBy: "name", order: "invalid" };
 
       await sortStudents(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(mockNext).toHaveBeenCalledWith(new AppError("Please provide a valid order. either asc or desc", 400));
       expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockResponse.json).not.toHaveBeenCalled();
@@ -484,7 +505,7 @@ describe("student handlers", () => {
 
     it("should return sorted students when valid sortBy and order are provided", async () => {
       mockRequest.query = { sortBy: "name", order: "asc" };
-
+      // Mock student data
       const mockStudents = [
         { name: "Alice", age: 25 },
         { name: "Bob", age: 22 },
@@ -495,6 +516,7 @@ describe("student handlers", () => {
         { name: "Bob", age: 22 },
       ];
 
+      // Mock student model
       Student.find.mockReturnValue({
         select: jest.fn().mockResolvedValue(mockStudents),
       });
@@ -502,7 +524,7 @@ describe("student handlers", () => {
       mergeSort.mockReturnValue(mockSortedStudents);
 
       await sortStudents(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.find).toHaveBeenCalled();
       expect(mergeSort).toHaveBeenCalledWith(mockStudents, "name", "asc");
       expect(mockResponse.status).toHaveBeenCalledWith(200);
@@ -523,7 +545,7 @@ describe("student handlers", () => {
       });
 
       await sortStudents(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(mockNext).toHaveBeenCalledWith(new AppError("No students found", 404));
       expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockResponse.json).not.toHaveBeenCalled();
@@ -535,23 +557,25 @@ describe("student handlers", () => {
    */
   describe("forgot password handler", () => {
     it("should call next with a 400 error if email is not provided", async () => {
+      // Mock request without email
       mockRequest = {
         body: {},
       };
       await forgotPassword(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(mockNext).toHaveBeenCalledWith(new AppError("Email is required", 400));
       expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockResponse.json).not.toHaveBeenCalled();
     });
 
     it("should call next with a 404 error if no student is found with the provided email", async () => {
+      // Mock request with non-existent email
       mockRequest.body = { email: "nonexistent@example.com" };
 
       Student.findOne.mockResolvedValue(null);
 
       await forgotPassword(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findOne).toHaveBeenCalledWith({ email: "nonexistent@example.com" });
       expect(mockNext).toHaveBeenCalledWith(new AppError("No student found", 404));
       expect(mockResponse.status).not.toHaveBeenCalled();
@@ -559,8 +583,9 @@ describe("student handlers", () => {
     });
 
     it("should generate a reset token, hash it, save it to the student, and respond with the token", async () => {
+      // Mock request with email
       mockRequest.body = { email: "student@example.com" };
-
+      // Mock student
       const mockStudent = {
         email: "student@example.com",
         save: jest.fn(),
@@ -568,13 +593,13 @@ describe("student handlers", () => {
 
       const mockResetToken = "reset-token";
       const mockHashedToken = "hashed-reset-token";
-
+      // Mock functions
       Student.findOne.mockResolvedValue(mockStudent);
       createToken.mockReturnValue(mockResetToken);
       hashToken.mockReturnValue(mockHashedToken);
 
       await forgotPassword(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findOne).toHaveBeenCalledWith({ email: "student@example.com" });
       expect(createToken).toHaveBeenCalled();
       expect(hashToken).toHaveBeenCalledWith(mockResetToken);
@@ -595,10 +620,11 @@ describe("student handlers", () => {
    */
   describe("reset password handler", () => {
     it("should call next with a 400 error if passwords are not provided", async () => {
+      //mock request
       mockRequest.body = {};
 
       await passwordReset(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(mockNext).toHaveBeenCalledWith(new AppError("Password is required", 400));
       expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockResponse.json).not.toHaveBeenCalled();
@@ -612,7 +638,7 @@ describe("student handlers", () => {
       };
 
       await passwordReset(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(mockNext).toHaveBeenCalledWith(new AppError("Passwords do not match", 400));
       expect(mockResponse.status).not.toHaveBeenCalled();
       expect(mockResponse.json).not.toHaveBeenCalled();
@@ -632,7 +658,7 @@ describe("student handlers", () => {
       };
 
       await passwordReset(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findOne).toHaveBeenCalledWith({ email: "student@example.com" });
       expect(mockNext).toHaveBeenCalledWith(new AppError("No student found", 404));
       expect(mockResponse.status).not.toHaveBeenCalled();
@@ -640,6 +666,7 @@ describe("student handlers", () => {
     });
 
     it("should call next with a 400 error if token is invalid or expired", async () => {
+      // Mock student
       const mockStudent = {
         email: "student@example.com",
         resetToken: "hashed-reset-token",
@@ -663,7 +690,7 @@ describe("student handlers", () => {
       hashToken.mockReturnValue("hashed-reset-token");
 
       await passwordReset(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(Student.findOne).toHaveBeenCalledWith({ email: "student@example.com" });
       expect(hashToken).toHaveBeenCalledWith("reset-token");
       expect(mockNext).toHaveBeenCalledWith(new AppError("Invalid token or token has expired", 400));
@@ -672,6 +699,7 @@ describe("student handlers", () => {
     });
 
     it("should reset the password and respond with success", async () => {
+      // Mock student
       const mockStudent = {
         email: "student@example.com",
         resetToken: "hashed-reset-token",
@@ -693,7 +721,7 @@ describe("student handlers", () => {
       hashToken.mockReturnValue("hashed-reset-token");
 
       await passwordReset(mockRequest, mockResponse, mockNext);
-
+      //       run assertions
       expect(hashToken).toHaveBeenCalledWith("reset-token");
       expect(mockStudent.password).toBe("newPassword123");
       expect(mockStudent.resetToken).toBeNull();

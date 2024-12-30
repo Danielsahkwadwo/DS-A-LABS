@@ -1,14 +1,13 @@
 const { isInstructor } = require("../../Middlewares/authMiddleware");
 
+// Mock request, response, and next
 const mockRequest = {
   user: { id: "12345", role: "instructor" },
 };
-
 const mockResponse = {
   status: jest.fn().mockReturnThis(),
   json: jest.fn(),
 };
-
 const mockNext = jest.fn();
 
 describe("Access Control", () => {

@@ -1,7 +1,11 @@
 const mergeSort = require("../../helpers/mergeSort");
 
+/**
+ * Test cases for merge sort
+ */
 describe("merge sort", () => {
   it("should sort an array of objects in ascending order by the specified key", () => {
+    // Arrange test data
     const input = [
       { name: "Alice", age: 25 },
       { name: "Bob", age: 22 },
@@ -18,6 +22,7 @@ describe("merge sort", () => {
   });
 
   it("should sort an array of objects in descending order by the specified key", () => {
+    // Arrange test data
     const input = [
       { name: "Alice", age: 25 },
       { name: "Bob", age: 22 },
@@ -46,6 +51,7 @@ describe("merge sort", () => {
   });
 
   it("should handle sorting with non-numeric values", () => {
+    // Arrange test data
     const input = [
       { name: "Charlie", age: 30 },
       { name: "Bob", age: 22 },
@@ -58,10 +64,12 @@ describe("merge sort", () => {
     ];
 
     const result = mergeSort(input, "name", "asc");
+    // Assert
     expect(result).toEqual(expectedOutput);
   });
 
   it("should handle sorting with duplicate values", () => {
+    // Arrange test data
     const input = [
       { name: "Alice", age: 25 },
       { name: "Bob", age: 25 },
@@ -74,6 +82,7 @@ describe("merge sort", () => {
     ];
 
     const result = mergeSort(input, "age", "asc");
+    // Assert
     expect(result).toEqual(expectedOutput);
   });
 });

@@ -5,6 +5,7 @@ const { createJWT } = require("../../Utils/createJWT");
 jest.mock("jsonwebtoken");
 
 describe("create Json Web Token", () => {
+  // Reset mocks before each test
   beforeEach(() => {
     jest.clearAllMocks();
     process.env.JWT_SECRET = "test-secret";
@@ -21,10 +22,9 @@ describe("create Json Web Token", () => {
     // Mock JWT.sign to return a mock token
     JWT.sign.mockReturnValue(mockToken);
 
-    // Act
     const result = createJWT(mockId, mockRole, mockStudentId);
 
-    // Assert
+    // run assertions
     expect(JWT.sign).toHaveBeenCalledWith(
       { id: mockId, role: mockRole, studentId: mockStudentId },
       "test-secret",
@@ -44,7 +44,7 @@ describe("create Json Web Token", () => {
       throw new Error("JWT signing failed");
     });
 
-    // Act & Assert
+    // run assertions
     expect(() => createJWT(mockId, mockRole, mockStudentId)).toThrow(
       "JWT signing failed"
     );
