@@ -254,7 +254,7 @@ exports.passwordReset = async (req, res, next) => {
       return next(new AppError("No student found", 404));
     }
     const hashedToken = hashToken(token);
-    if (student.resetToken !== hashedToken || student.resetTokenExpires < Date.now()) {
+    if (student.resetToken !== hashedToken || student.resetTokenExpiration < Date.now()) {
       return next(new AppError("Invalid token or token has expired", 400));
     }
     student.password = newPassword;
