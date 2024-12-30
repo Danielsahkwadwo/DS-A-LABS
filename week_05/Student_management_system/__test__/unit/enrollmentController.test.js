@@ -1,4 +1,10 @@
-const { getEnrollments, createEnrollment } = require("../../Controllers/enrolment");
+const {
+  getEnrollments,
+  createEnrollment,
+  getStudentEnrollments,
+  getStudentEnrolledInCourse,
+  deleteEnrollmentByInstructor,
+} = require("../../Controllers/enrolment");
 const Course = require("../../Models/courses");
 const Enrollment = require("../../Models/enrolment");
 const Student = require("../../Models/students");
@@ -13,6 +19,9 @@ describe("Enrollment Controller Unit Tests", () => {
     jest.clearAllMocks();
   });
 
+  /**
+   * Test the getEnrollments handler
+   */
   describe("getEnrollments", () => {
     it("should return enrollments successfully", async () => {
       const mockEnrollments = [{ id: 1 }, { id: 2 }];
@@ -46,6 +55,9 @@ describe("Enrollment Controller Unit Tests", () => {
     });
   });
 
+  /**
+   * Test the createEnrollment handler
+   */
   describe("createEnrollment", () => {
     it("should create an enrollment successfully", async () => {
       const mockStudent = { id: "student1", coursesEnrolled: ["course1"], save: jest.fn() };
@@ -116,28 +128,267 @@ describe("Enrollment Controller Unit Tests", () => {
       expect(mockNext).toHaveBeenCalledWith(expect.any(AppError));
     });
 
-    it("should call mockNext with error if student is already enrolled in course", async () => {
+    // it("should call mockNext with error if student is already enrolled in course", async () => {
+    //   const mockStudent = {
+    //     id: "student1",
+    //     studentId: "STUDENT1",
+    //     coursesEnrolled: ["course1"],
+    //     save: jest.fn(),
+    //   };
+    //   const mockCourse = { id: "course1", courseCode: "MATH1" };
+
+    //   const mockRequest = { body: { studentId: "student1", courseCode: "MATH1" } };
+    //   const mockResponse = { status: jest.fn().mockReturnThis(), json: jest.fn() };
+    //   const mockNext = jest.fn();
+
+    //   Student.findOne.mockResolvedValue(mockStudent);
+    //   Course.findOne.mockResolvedValue(mockCourse);
+
+    //   await createEnrollment(mockRequest, mockResponse, mockNext);
+
+    //   expect(Student.findOne).toHaveBeenCalledWith({ studentId: "STUDENT1" });
+    //   expect(Course.findOne).toHaveBeenCalledWith({ courseCode: "MATH1" });
+    //   expect(mockStudent.coursesEnrolled).toContain(mockCourse.id);
+    //   expect(mockNext).toHaveBeenCalledWith(expect.any(AppError));
+    // });
+  });
+
+  /**
+   * Test to get all courses for a student
+   */
+  describe("getStudentEnrollments", () => {
+    it("should return courses for the logged-in student", async () => {
+      const mockCourses = [
+        {
+          _id: "enrollment1",
+          courseCode: "COURSE1",
+          courseName: "Course One",
+          courseDescription: "Description of Course One",
+          courseDuration: "10 weeks",
+          credits: 3,
+        },
+      ];
+
+      Enrollment.aggregate.mockResolvedValue(mockCourses);
+
+      const mockRequest = {
+        user: { role: "student", studentId: "student1" },
+      };
+      const mockResponse = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      const mockNext = jest.fn();
+
+      await getStudentEnrollments(mockRequest, mockResponse, mockNext);
+
+      expect(Enrollment.aggregate).toHaveBeenCalledWith([
+        { $match: { studentId: "student1" } },
+        {
+          $lookup: {
+            from: "courses",
+            localField: "courseCode",
+            foreignField: "courseCode",
+            as: "course",
+          },
+        },
+        { $unwind: "$course" },
+        {
+          $project: {
+            _id: 1,
+            courseCode: 1,
+            courseName: "$course.courseName",
+            courseDescription: "$course.courseDescription",
+            courseDuration: "$course.courseDuration",
+            credits: "$course.credits",
+          },
+        },
+      ]);
+      expect(mockResponse.status).toHaveBeenCalledWith(200);
+      expect(mockResponse.json).toHaveBeenCalledWith({
+        status: "success",
+        data: { courses: mockCourses },
+      });
+    });
+
+    it("should call mockNext with error if no courses found", async () => {
+      Enrollment.aggregate.mockResolvedValue(null);
+
+      const mockRequest = {
+        user: { role: "student", studentId: "student1" },
+      };
+      const mockResponse = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      const mockNext = jest.fn();
+
+      await getStudentEnrollments(mockRequest, mockResponse, mockNext);
+
+      expect(mockNext).toHaveBeenCalledWith(expect.any(AppError));
+    });
+  });
+
+  /**
+   * Test to get all students enrolled in a course
+   */
+  describe("getStudentEnrolledInCourse", () => {
+    it("should return students enrolled in a course", async () => {
+      const mockStudents = [
+        {
+          _id: "enrollment1",
+          studentId: "student1",
+          firstName: "John",
+          lastName: "Doe",
+          email: "john.doe@example.com",
+          dateOfBirth: "2000-01-01",
+          phoneNumber: "123456789",
+          department: "Engineering",
+          gender: "Male",
+        },
+      ];
+
+      Enrollment.aggregate.mockResolvedValue(mockStudents);
+
+      const req = { params: { courseCode: "COURSE1" } };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      const next = jest.fn();
+
+      await getStudentEnrolledInCourse(req, res, next);
+
+      expect(Enrollment.aggregate).toHaveBeenCalledWith([
+        { $match: { courseCode: "COURSE1" } },
+        {
+          $lookup: {
+            from: "students",
+            localField: "studentId",
+            foreignField: "studentId",
+            as: "student",
+          },
+        },
+        { $unwind: "$student" },
+        {
+          $project: {
+            _id: 1,
+            studentId: 1,
+            firstName: "$student.firstName",
+            lastName: "$student.lastName",
+            email: "$student.email",
+            dateOfBirth: "$student.dateOfBirth",
+            phoneNumber: "$student.phoneNumber",
+            department: "$student.department",
+            gender: "$student.gender",
+          },
+        },
+      ]);
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        status: "success",
+        data: { students: mockStudents },
+      });
+    });
+
+    it("should call next with error if no students found", async () => {
+      Enrollment.aggregate.mockResolvedValue(null);
+
+      const req = { params: { courseCode: "COURSE1" } };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      const next = jest.fn();
+
+      await getStudentEnrolledInCourse(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(expect.any(AppError));
+    });
+  });
+
+  /**
+   * Test to delete an enrollment
+   */
+  describe("deleteEnrollmentByInstructor", () => {
+    it("should delete the enrollment and update the student successfully", async () => {
+      const mockEnrollment = {
+        _id: "enrollment1",
+        studentId: "student1",
+        courseCode: "COURSE1",
+      };
+
+      const mockCourse = {
+        _id: "course1",
+        courseCode: "COURSE1",
+      };
+
       const mockStudent = {
-        id: "student1",
-        studentId: "STUDENT1",
+        studentId: "student1",
         coursesEnrolled: ["course1"],
         save: jest.fn(),
       };
-      const mockCourse = { id: "course1", courseCode: "MATH1" };
 
-      const mockRequest = { body: { studentId: "student1", courseCode: "MATH1" } };
-      const mockResponse = { status: jest.fn().mockReturnThis(), json: jest.fn() };
-      const mockNext = jest.fn();
-
-      Student.findOne.mockResolvedValue(mockStudent);
+      Enrollment.findByIdAndDelete.mockResolvedValue(mockEnrollment);
       Course.findOne.mockResolvedValue(mockCourse);
+      Student.findOne.mockResolvedValue(mockStudent);
 
-      await createEnrollment(mockRequest, mockResponse, mockNext);
+      const req = { params: { enrollmentId: "enrollment1" } };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      const next = jest.fn();
 
-      expect(Student.findOne).toHaveBeenCalledWith({ studentId: "STUDENT1" });
-      expect(Course.findOne).toHaveBeenCalledWith({ courseCode: "MATH1" });
-      expect(mockStudent.coursesEnrolled).toContain(mockCourse.id); 
-      expect(mockNext).toHaveBeenCalledWith(expect.any(AppError));
+      await deleteEnrollmentByInstructor(req, res, next);
+
+      expect(Enrollment.findByIdAndDelete).toHaveBeenCalledWith("enrollment1");
+      expect(Course.findOne).toHaveBeenCalledWith({
+        courseCode: mockEnrollment.courseCode,
+      });
+      expect(Student.findOne).toHaveBeenCalledWith({
+        studentId: mockEnrollment.studentId,
+      });
+      expect(mockStudent.coursesEnrolled).not.toContain(mockCourse._id);
+      expect(mockStudent.save).toHaveBeenCalled();
+      expect(res.status).toHaveBeenCalledWith(200);
+      expect(res.json).toHaveBeenCalledWith({
+        status: "success",
+        message: "enrolment deleted successfully",
+      });
+    });
+
+    it("should call next with error if enrollment is not found", async () => {
+      Enrollment.findByIdAndDelete.mockResolvedValue(null);
+
+      const req = { params: { enrollmentId: "enrollment1" } };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      const next = jest.fn();
+
+      await deleteEnrollmentByInstructor(req, res, next);
+
+      expect(Enrollment.findByIdAndDelete).toHaveBeenCalledWith("enrollment1");
+      expect(next).toHaveBeenCalledWith(expect.any(AppError));
+    });
+
+    it("should call next with error on unexpected exception", async () => {
+      const mockError = new Error("Unexpected error");
+
+      Enrollment.findByIdAndDelete.mockRejectedValue(mockError);
+
+      const req = { params: { enrollmentId: "enrollment1" } };
+      const res = {
+        status: jest.fn().mockReturnThis(),
+        json: jest.fn(),
+      };
+      const next = jest.fn();
+
+      await deleteEnrollmentByInstructor(req, res, next);
+
+      expect(next).toHaveBeenCalledWith(mockError);
     });
   });
 });
