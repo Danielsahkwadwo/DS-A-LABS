@@ -6,15 +6,16 @@ RedisClient.on("connect", () => {
   console.log("connected to redis");
   logger.log("info", "connected to redis");
 });
-RedisClient.on("error", (err) => {
-  logger.log("error", err.message);
-});
+// RedisClient.on("error", (err) => {
+//   logger.log("error", err.message);
+// });
 
 const RedisConnect = async () => {
   try {
     await RedisClient.connect();
   } catch (err) {
     logger.log("error", err.message);
+    console.log("Error connecting to redis");
   }
 };
 

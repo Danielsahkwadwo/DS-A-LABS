@@ -8,7 +8,8 @@ const Specs = require("./swagger");
 const logger = require("./config/logger");
 const globalErrorHandler = require("./Middlewares/globalErrorHandler");
 const connectDatabase = require("./config/database");
-const {RedisConnect} = require("./config/redis");
+const { RedisConnect } = require("./config/redis");
+const { xss } = require("express-xss-sanitizer");
 
 const app = express();
 
@@ -25,6 +26,7 @@ RedisConnect();
 app.use(express.json());
 app.use(cookieParser());
 app.use(mongoSanitize());
+app.use(xss());
 
 app.get("/", (req, res) => {
   res.send("welcome to the server");
@@ -41,6 +43,16 @@ app.use(globalErrorHandler);
 
 app.listen(process.env.PORT ?? 3000, () => {
   console.log(`server started on port ${process.env.PORT}`);
+});
+
+process.on("unhandledRejection", (err) => {
+  logger.log("error", err.message, { label: "UNHANDLED_REJECTION" });
+  console.log(err);
+});
+
+process.on("uncaughtException", (err) => {
+  logger.log("error", err.message, { label: "UNCAUGHT_EXCEPTION" });
+  console.log(err);
 });
 
 module.exports = app;
