@@ -1,7 +1,7 @@
 const JWT = require("jsonwebtoken");
 const AppError = require("../Utils/AppError");
 
-exports.protected = async (req, res, next) => {
+exports.isAuthorized = async (req, res, next) => {
   try {
     let token;
     if (

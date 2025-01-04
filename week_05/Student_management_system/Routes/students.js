@@ -12,7 +12,7 @@ const {
   getSelf,
   updateSelf,
 } = require("../Controllers/students");
-const { protected, isInstructor } = require("../Middlewares/authMiddleware");
+const { isAuthorized, isInstructor } = require("../Middlewares/authMiddleware");
 const cacheMiddleware = require("../Middlewares/cacheMiddleware");
 const router = express.Router();
 
@@ -47,7 +47,7 @@ const router = express.Router();
  *       400:
  *         description: Bad request
  */
-router.post("/", protected, isInstructor, addStudent);
+router.post("/", isAuthorized, isInstructor, addStudent);
 
 /**
  * @swagger
@@ -69,7 +69,7 @@ router.post("/", protected, isInstructor, addStudent);
  *       400:
  *         description: Internal server error
  */
-router.get("/", protected, isInstructor, getStudents);
+router.get("/", isAuthorized, isInstructor, getStudents);
 
 /**
  * @swagger
@@ -96,7 +96,7 @@ router.get("/", protected, isInstructor, getStudents);
  *       404:
  *         description: Student not found
  */
-router.get("/get-student/:id", protected, isInstructor, getStudent);
+router.get("/get-student/:id", isAuthorized, isInstructor, getStudent);
 
 /**
  * @swagger
@@ -116,7 +116,7 @@ router.get("/get-student/:id", protected, isInstructor, getStudent);
  *       404:
  *         description: Student not found
  */
-router.get("/get-self", protected, getSelf);
+router.get("/get-self", isAuthorized, getSelf);
 /**
  * @swagger
  * /api/v1/students/{id}:
@@ -146,7 +146,7 @@ router.get("/get-self", protected, getSelf);
  *       404:
  *         description: Student not found
  */
-router.put("/update/:id", protected, isInstructor, updateStudent);
+router.put("/update/:id", isAuthorized, isInstructor, updateStudent);
 
 /**
  * @swagger
@@ -172,7 +172,7 @@ router.put("/update/:id", protected, isInstructor, updateStudent);
  *       401:
  *         description: Unauthorized
  */
-router.put("/update-self", protected, updateSelf);
+router.put("/update-self", isAuthorized, updateSelf);
 /**
  * @swagger
  * /api/v1/students/{id}:
@@ -192,7 +192,7 @@ router.put("/update-self", protected, updateSelf);
  *       404:
  *         description: Student not found
  */
-router.delete("/:id", protected, isInstructor, deleteStudent);
+router.delete("/:id", isAuthorized, isInstructor, deleteStudent);
 
 /**
  * @swagger
@@ -250,7 +250,7 @@ router.post("/auth/login", loginStudent);
  *       404:
  *         description: Internal server error
  */
-router.get("/sort/students", protected, isInstructor, cacheMiddleware("students", 1800), sortStudents);
+router.get("/sort/students", isAuthorized, isInstructor, cacheMiddleware("students", 1800), sortStudents);
 
 /**
  * @swagger

@@ -8,7 +8,7 @@ const {
   deleteEnrollmentByInstructor,
   getStudentEnrolledInCourse,
 } = require("../Controllers/enrolment");
-const { protected, isInstructor } = require("../Middlewares/authMiddleware");
+const { isAuthorized, isInstructor } = require("../Middlewares/authMiddleware");
 const router = express.Router();
 
 /**
@@ -40,7 +40,7 @@ const router = express.Router();
  *       500:
  *         description: Internal server error
  */
-router.get("/", protected, isInstructor, getEnrollments);
+router.get("/", isAuthorized, isInstructor, getEnrollments);
 /**
  * @swagger
  * /api/v1/enrolments:
@@ -67,7 +67,7 @@ router.get("/", protected, isInstructor, getEnrollments);
  *       500:
  *         description: Internal server error
  */
-router.post("/", protected, isInstructor, createEnrollment);
+router.post("/", isAuthorized, isInstructor, createEnrollment);
 
 /**
  * @swagger
@@ -95,7 +95,7 @@ router.post("/", protected, isInstructor, createEnrollment);
  *       500:
  *         description: Internal server error
  */
-router.post("/enroll-self", protected, selfEnrollment);
+router.post("/enroll-self", isAuthorized, selfEnrollment);
 
 /**
  * @swagger
@@ -126,7 +126,7 @@ router.post("/enroll-self", protected, selfEnrollment);
  *       500:
  *         description: Internal server error
  */
-router.get("/student/:studentId", protected, getStudentEnrollments);
+router.get("/student/:studentId", isAuthorized, getStudentEnrollments);
 
 /**
  * @swagger
@@ -159,7 +159,7 @@ router.get("/student/:studentId", protected, getStudentEnrollments);
  */
 router.get(
   "/course/:courseCode",
-  protected,
+  isAuthorized,
   isInstructor,
   getStudentEnrolledInCourse
 );
@@ -187,7 +187,7 @@ router.get(
  *       500:
  *         description: Internal server error
  */
-router.delete("/delete/:enrollmentId", protected, deleteEnrollmentByStudent);
+router.delete("/delete/:enrollmentId", isAuthorized, deleteEnrollmentByStudent);
 
 /**
  * @swagger
@@ -212,5 +212,5 @@ router.delete("/delete/:enrollmentId", protected, deleteEnrollmentByStudent);
  *       500:
  *         description: Internal server error
  */
-router.delete("/:enrollmentId", protected, deleteEnrollmentByInstructor);
+router.delete("/:enrollmentId", isAuthorized, deleteEnrollmentByInstructor);
 module.exports = router;

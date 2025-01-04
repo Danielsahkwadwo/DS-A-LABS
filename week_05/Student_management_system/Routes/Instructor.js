@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-const { protected, isInstructor } = require("../Middlewares/authMiddleware");
+const { isAuthorized, isInstructor } = require("../Middlewares/authMiddleware");
 const {
   addInstructor,
   getAllInstructors,
@@ -43,7 +43,7 @@ const {
  */
 router.post("/auth/login", loginInstructor);
 
-router.use(protected, isInstructor);
+router.use(isAuthorized, isInstructor);
 /**
  * @swagger
  * /api/v1/instructors:

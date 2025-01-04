@@ -1,5 +1,5 @@
 const authMiddleware = require("../../Middlewares/authMiddleware");
-const auth = authMiddleware.protected;
+const auth = authMiddleware.isAuthorized;
 const JWT = require("jsonwebtoken");
 const AppError = require("../../Utils/AppError");
 

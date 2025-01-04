@@ -7,11 +7,11 @@ const {
   deleteCourse,
   sortCourses,
 } = require("../Controllers/courses");
-const { protected, isInstructor } = require("../Middlewares/authMiddleware");
+const { isAuthorized, isInstructor } = require("../Middlewares/authMiddleware");
 const cacheMiddleware = require("../Middlewares/cacheMiddleware");
 const router = express.Router();
 
-router.use(protected);
+router.use(isAuthorized);
 
 /**
  * @swagger
@@ -182,6 +182,6 @@ router.delete("/:courseCode", isInstructor, deleteCourse);
  *       404:
  *         description: Course not found
  */
-router.get("/sort/courses", protected, isInstructor, cacheMiddleware("courses", 1800), sortCourses);
+router.get("/sort/courses", isAuthorized, isInstructor, cacheMiddleware("courses", 1800), sortCourses);
 
 module.exports = router;
