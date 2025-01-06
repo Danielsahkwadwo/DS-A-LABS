@@ -41,7 +41,7 @@ app.use("/api/v1/instructors", instructorRoutes);
 //using global error handler middleware
 app.use(globalErrorHandler);
 
-app.listen(process.env.PORT ?? 3000, () => {
+const server = app.listen(process.env.PORT ?? 3000, () => {
   console.log(`server started on port ${process.env.PORT}`);
 });
 
@@ -55,4 +55,4 @@ process.on("uncaughtException", (err) => {
   console.log(err);
 });
 
-module.exports = app;
+module.exports = {server,app};

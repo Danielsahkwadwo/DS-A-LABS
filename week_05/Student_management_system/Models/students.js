@@ -8,6 +8,7 @@ const studentSchema = new mongoose.Schema(
       type: String,
       required: [true, "first name is required"],
       trim: true,
+      index: true,
     },
     lastName: {
       type: String,
@@ -84,7 +85,8 @@ studentSchema.pre("save", async function (next) {
 studentSchema.methods.comparePassword = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
+
+studentSchema.index({ firstName: 1, lastName: 1, department: 1 });
 const Student = mongoose.model("student", studentSchema);
-Student.createIndexes();
 
 module.exports = Student;

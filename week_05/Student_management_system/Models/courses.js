@@ -36,13 +36,13 @@ const coursesSchema = new mongoose.Schema(
     semester: {
       type: String,
       required: [true, "semester is required"],
-      index:true
+      index: true,
     },
   },
   { timestamps: true }
 );
 
+coursesSchema.index({ department: 1, semester: 1 });
 const Course = mongoose.model("Course", coursesSchema);
-Course.createIndexes();
 
 module.exports = Course;
