@@ -33,7 +33,7 @@ afterEach(async () => {
   await Course.deleteMany();
 });
 
-describe("POST /courses - createCourse", () => {
+describe("POST /api/v1/courses - createCourse", () => {
   it("should create a course and return 201 status", async () => {
     // Create an instructor in the database
     const instructor = await Instructor.create({
@@ -169,5 +169,71 @@ describe("POST /courses - createCourse", () => {
       .expect(400);
 
     expect(response.body.message).toBe("Course already exists");
+  });
+});
+
+describe("GET /api/v1/courses - getCourses", () => {
+  test("should return all courses with pagination and filtering applied", async () => {
+    const token = generateToken({ id: "instructor123", role: "instructor" });
+    // Seed test data
+    await Course.create([
+      {
+        courseCode: "CS101",
+        courseName: "Introduction to Computer Science",
+        credits: 3,
+        department: "Computer Science",
+        instructorId: new mongoose.Types.ObjectId(),
+        semester: 1,
+        courseDuration: "12 weeks",
+        courseDescription: "Learn the basics of computer science",
+      },
+      {
+        courseCode: "MTH101",
+        courseName: "Calculus I",
+        credits: 4,
+        department: "Mathematics",
+        instructorId: new mongoose.Types.ObjectId(),
+        semester: 1,
+        courseDuration: "12 weeks",
+        courseDescription: "Learn the basics of calculus",
+      },
+      {
+        courseCode: "PHY101",
+        courseName: "Physics I",
+        credits: 3,
+        department: "Physics",
+        instructorId: new mongoose.Types.ObjectId(),
+        semester: 1,
+        courseDuration: "12 weeks",
+        courseDescription: "Learn the basics of physics",
+      },
+    ]);
+
+    const response = await request(app)
+      .get(`${PATH}?credits[gte]=4&page=1&limit=1`) // Query for filtering and pagination
+      .set("Authorization", `Bearer ${token}`);
+
+      console.log(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe("success");
+    expect(response.body.results).toBe(1); // Pagination limit is 1
+    expect(response.body.data.courses[0].courseName).toBe("Calculus I"); // Only one course should match
+  });
+
+  test("should return 400 if sort criteria is not provided", async () => {
+    const token = generateToken({ id: "instructor123", role: "instructor" });
+
+    const response = await request(app)
+      .get(`${PATH}?credits[gte]=10`) // Query with no matching data
+      .set("Authorization", `Bearer ${token}`);
+
+    expect(response.status).toBe(400);
+    expect(response.body.message).toBe("Please provide a sort criteria");
+  });
+  test("should return 401 if no authorization token is provided", async () => {
+    const response = await request(app).get(PATH);
+
+    expect(response.status).toBe(401); 
+    expect(response.body.message).toBe("you are not logged in");
   });
 });

@@ -7,9 +7,7 @@ exports.getEnrollments = async (req, res, next) => {
   try {
     const enrollments = await Enrollment.find();
     if (!enrollments) {
-      return next(
-        new AppError("an error occurred while getting enrollments", 400)
-      );
+      return next(new AppError("an error occurred while getting enrollments", 400));
     }
     res.status(200).json({
       status: "success",
@@ -46,15 +44,11 @@ exports.createEnrollment = async (req, res, next) => {
 
     //check if student is already enrolled in this course
     if (student.coursesEnrolled.includes(course._id)) {
-      return next(
-        new AppError("student is already enrolled in this course", 400)
-      );
+      return next(new AppError("student is already enrolled in this course", 400));
     }
     const enrollment = await Enrollment.create({ studentId, courseCode });
     if (!enrollment) {
-      return next(
-        new AppError("an error occurred while creating enrollment", 400)
-      );
+      return next(new AppError("an error occurred while creating enrollment", 400));
     }
     //update student
     student.coursesEnrolled.push(course._id);
@@ -98,9 +92,7 @@ exports.selfEnrollment = async (req, res, next) => {
       courseCode,
     });
     if (!enrollment) {
-      return next(
-        new AppError("an error occurred while creating enrollment", 400)
-      );
+      return next(new AppError("an error occurred while creating enrollment", 400));
     }
     //update student
     student.coursesEnrolled.push(course._id);
@@ -120,9 +112,7 @@ exports.selfEnrollment = async (req, res, next) => {
 exports.getStudentEnrollments = async (req, res, next) => {
   try {
     let studentId;
-    req.user.role === "student"
-      ? (studentId = req.user.studentId)
-      : (studentId = req.params.studentId);
+    req.user.role === "student" ? (studentId = req.user.studentId) : (studentId = req.params.studentId);
     const courses = await Enrollment.aggregate([
       {
         $match: {
@@ -200,9 +190,7 @@ exports.getStudentEnrolledInCourse = async (req, res, next) => {
       },
     ]);
     if (!students) {
-      return next(
-        new AppError("an error occurred while getting students", 400)
-      );
+      return next(new AppError("an error occurred while getting students", 400));
     }
     res.status(200).json({
       status: "success",

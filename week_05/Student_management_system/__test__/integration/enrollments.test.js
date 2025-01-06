@@ -142,7 +142,7 @@ describe("POST /enrollments - course enrollment", () => {
       gender: "male",
     });
 
-    const instructorToken = generateToken({ _id:new mongoose.Types.ObjectId() }, "instructor");
+    const instructorToken = generateToken({ _id: new mongoose.Types.ObjectId() }, "instructor");
 
     const response = await request(app)
       .post(PATH)
@@ -151,5 +151,38 @@ describe("POST /enrollments - course enrollment", () => {
 
     expect(response.status).toBe(400);
     expect(response.body.message).toBe("student is already enrolled in this course");
+  });
+});
+
+describe("GET /api/v1/enrollments - getEnrollments", () => {
+  test("should return all enrollments successfully", async () => {
+    // Seed test data
+    await Enrollment.create([
+      { studentId: new mongoose.Types.ObjectId(), courseId: new mongoose.Types.ObjectId(), courseCode: "COURSE101" },
+      { studentId: new mongoose.Types.ObjectId(), courseId: new mongoose.Types.ObjectId(), courseCode: "COURSE102" },
+    ]);
+    const token = generateToken({ id: "instructor123" }, "instructor");
+
+    const response = await request(app).get(PATH).set("Authorization", `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe("success");
+    expect(response.body.data.enrollments.length).toBe(2);
+  });
+
+  test("should return empty array if no enrollments exist", async () => {
+    const token = generateToken({ id: "instructor123" }, "instructor");
+
+    const response = await request(app).get(PATH).set("Authorization", `Bearer ${token}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.enrollments).toStrictEqual([]);
+  });
+
+  test("should return 403 if no authorization token is provided", async () => {
+    const response = await request(app).get(PATH);
+
+    expect(response.status).toBe(401);
+    expect(response.body.message).toBe("you are not logged in");
   });
 });

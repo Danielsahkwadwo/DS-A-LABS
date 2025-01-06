@@ -179,7 +179,6 @@ describe("GET /students - getStudents", () => {
         studentId: "STUDENT001",
         gender: "female",
         phoneNumber: "1234567890",
-        age: 22,
       },
       {
         firstName: "Bob",
@@ -191,7 +190,6 @@ describe("GET /students - getStudents", () => {
         studentId: "STUDENT002",
         gender: "male",
         phoneNumber: "1234567890",
-        age: 23,
       },
       {
         firstName: "Charlie",
@@ -203,19 +201,17 @@ describe("GET /students - getStudents", () => {
         studentId: "STUDENT003",
         gender: "female",
         phoneNumber: "1234567890",
-        age: 24,
       },
     ]);
 
     const response = await request(app)
-      .get(`${PATH}?age=22&page=1&limit=1`) // Query for filtering and pagination
-      .set("Authorization", `Bearer ${instructorToken}`) // Use the generated token
+      .get(`${PATH}?firstName=Bob&page=1&limit=1`) // Query for filtering and pagination
+      .set("Authorization", `Bearer ${instructorToken}`); // Use the generated token
 
-      console.log(response.body);
     expect(response.status).toBe(200);
     expect(response.body.status).toBe("success");
-    expect(response.body.results).toBe(2); // Pagination limit is 1
-    expect(response.body.data.students[0].name).toBe("Bob"); // Only one student should match
+    expect(response.body.results).toBe(1); // Pagination limit is 1
+    expect(response.body.data.students[0].firstName).toBe("Bob"); // Only one student should match
     expect(response.body.data.students[0].password).toBeUndefined(); // Ensure password is excluded
   });
 
