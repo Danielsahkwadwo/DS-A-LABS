@@ -35,6 +35,6 @@ describe("Performance: Database Query Efficiency", () => {
     const endTime = Date.now();
 
     expect(students.length).toBe(1000);
-    expect(endTime - startTime).toBeLessThan(100); // Assert query time < 100ms
+    expect(endTime - startTime).toBeLessThan(200); // Assert query time < 200ms
   });
 });

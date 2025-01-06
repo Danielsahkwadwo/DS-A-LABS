@@ -21,7 +21,6 @@ beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);
-  await Course.createIndexes();
 });
 
 afterAll(async () => {

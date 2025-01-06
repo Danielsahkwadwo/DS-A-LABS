@@ -10,6 +10,8 @@ const globalErrorHandler = require("./Middlewares/globalErrorHandler");
 const connectDatabase = require("./config/database");
 const { RedisConnect } = require("./config/redis");
 const { xss } = require("express-xss-sanitizer");
+const helmet = require("helmet");
+const morgan = require("morgan");
 
 const app = express();
 
@@ -27,6 +29,8 @@ app.use(express.json());
 app.use(cookieParser());
 app.use(mongoSanitize());
 app.use(xss());
+app.use(helmet());
+app.use(morgan("dev"));
 
 app.get("/", (req, res) => {
   res.send("welcome to the server");
@@ -55,4 +59,4 @@ process.on("uncaughtException", (err) => {
   console.log(err);
 });
 
-module.exports = {server,app};
+module.exports = { server, app };

@@ -32,6 +32,7 @@ afterEach(async () => {
   await Student.deleteMany();
 });
 
+// Test the addStudent endpoint
 describe("POST /students - addStudent", () => {
   it("should create a student and return 201 status", async () => {
     // Generate a mock token
@@ -159,5 +160,80 @@ describe("POST /students - addStudent", () => {
 
     expect(response.body.status).toBe("fail");
     expect(response.body.message).toBe("Email or student ID already exists");
+  });
+});
+
+// Test the getStudents endpoint
+describe("GET /students - getStudents", () => {
+  test("should return all students with pagination and filtering applied", async () => {
+    const instructorToken = generateToken({ id: "instructor123", role: "instructor" });
+    // Seed test data
+    await Student.create([
+      {
+        firstName: "Alice",
+        lastName: "Smith",
+        email: "alice@example.com",
+        password: "password1",
+        dateOfBirth: "2000-01-01",
+        department: "Computer Science",
+        studentId: "STUDENT001",
+        gender: "female",
+        phoneNumber: "1234567890",
+        age: 22,
+      },
+      {
+        firstName: "Bob",
+        lastName: "Doe",
+        email: "bob@example.com",
+        password: "password2",
+        dateOfBirth: "2000-01-01",
+        department: "Computer Science",
+        studentId: "STUDENT002",
+        gender: "male",
+        phoneNumber: "1234567890",
+        age: 23,
+      },
+      {
+        firstName: "Charlie",
+        lastName: "Brown",
+        email: "charlie@example.com",
+        password: "password3",
+        dateOfBirth: "2000-01-01",
+        department: "Computer Science",
+        studentId: "STUDENT003",
+        gender: "female",
+        phoneNumber: "1234567890",
+        age: 24,
+      },
+    ]);
+
+    const response = await request(app)
+      .get(`${PATH}?age=22&page=1&limit=1`) // Query for filtering and pagination
+      .set("Authorization", `Bearer ${instructorToken}`) // Use the generated token
+
+      console.log(response.body);
+    expect(response.status).toBe(200);
+    expect(response.body.status).toBe("success");
+    expect(response.body.results).toBe(2); // Pagination limit is 1
+    expect(response.body.data.students[0].name).toBe("Bob"); // Only one student should match
+    expect(response.body.data.students[0].password).toBeUndefined(); // Ensure password is excluded
+  });
+
+  test("should return empty array if no students match the query", async () => {
+    const instructorToken = generateToken({ id: "instructor123", role: "instructor" });
+
+    const response = await request(app)
+      .get(`${PATH}?age[gte]=30`) // Query with no matching data
+      .set("Authorization", `Bearer ${instructorToken}`);
+
+    expect(response.status).toBe(200);
+    expect(response.body.data.students).toStrictEqual([]);
+  });
+
+  test("should return 401 if no authorization token is provided", async () => {
+    const response = await request(app).get(PATH);
+
+    expect(response.status).toBe(401); // Adjust based on your middleware
+    expect(response.body.message).toBe("you are not logged in"); // Customize this message as needed
   });
 });
